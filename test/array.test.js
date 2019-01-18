@@ -1,7 +1,7 @@
 import test from "ava";
 
 // NOTE: Used for more readable tests
-import { is, isEven, multiply } from "../index";
+import { is, isEven, multiply, pow } from "../index";
 
 import {
   array,
@@ -30,7 +30,7 @@ const macro = (t, expected, input) => {
   t.deepEqual(expected, input);
 };
 
-test("array", macro, [0, 4, 8], array(5, multiply(2), isEven));
+test("array", macro, [0, 4, 16], array(5, pow(2), isEven));
 test("concat", macro, [1, 2], concat(2)([1]));
 test("concatRight", macro, [1, 2], concatRight([1])(2));
 test("every: true", macro, true, every(isEven)([2, 4, 6]));

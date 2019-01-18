@@ -7,7 +7,7 @@
     "test": "ava",
     "test:watch": "ava --watch"
   },
-  "author": "",
+  "author": "Asbjørn Hegdahl",
   "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.2.3",

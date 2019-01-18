@@ -32,12 +32,14 @@ test("Without arguments", t => {
   const f4 = curry((a, b, c, d) => a + b + c + d);
   const f5 = curry((a, b, c, d, e) => a + b + c + d + e);
 
+  // Should evaluate when consecutively calling with empty arguments
   t.is(undefined, f());
   t.is(NaN, f2()());
   t.is(NaN, f3()()());
   t.is(NaN, f4()()()());
   t.is(NaN, f5()()()()());
 
+  // Should return a function of n-1 arity when calling without arguments
   t.is("function", typeof f2());
   t.is("function", typeof f3()());
   t.is("function", typeof f4()()());
