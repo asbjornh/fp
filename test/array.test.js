@@ -1,7 +1,7 @@
 import test from "ava";
 
 // NOTE: Used for more readable tests
-import { is, isEven, multiply } from "../source/curried";
+import { is, isEven, multiply } from "../index";
 
 import {
   array,
@@ -24,7 +24,7 @@ import {
   some,
   sort,
   sortByValueAt
-} from "../source/curried";
+} from "../index";
 
 const macro = (t, expected, input) => {
   t.deepEqual(expected, input);
