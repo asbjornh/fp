@@ -13,23 +13,25 @@ export const trace = v => console.log(v) || v;
 
 // Util
 export const is = curry((a, b) => a === b);
-export const isValueAt = curry((key, v, obj) => obj[key] === v);
+export const isValueAt = curry((key, v, obj) => (obj || {})[key] === v);
 
 // String
-export const charCodeAt = curry((index, str) => str.charCodeAt(index));
-export const endsWith = curry((term, str) => str.endsWith(term));
+export const charCodeAt = curry((index, str) => (str || "").charCodeAt(index));
+export const endsWith = curry((term, str) => (str || "").endsWith(term));
 export const fromCharCode = num => String.fromCharCode(num);
-export const match = curry((regexp, str) => str.match(regexp));
-export const padEnd = curry((length, padStr, str) => str.padEnd(length, padStr));
-export const padStart = curry((length, padStr, str) => str.padStart(length, padStr));
-export const repeat = curry((length, str) => str.repeat(length));
-export const replace = curry((regexp, newStr, str) => str.replace(regexp, newStr));
-export const split = curry((sep, str) => str.split(sep));
-export const startsWith = curry((term, str) => str.startsWith(term));
-export const substring = curry((start, end, str) => str.substring(start, end));
-export const toLowerCase = str => str.toLowerCase();
-export const toUpperCase = str => str.toUpperCase();
-export const trim = str => str.trim();
+export const match = curry((regexp, str) => (str || "").match(regexp));
+export const padEnd = curry((length, char, str) => (str || "").padEnd(length, char));
+export const padStart = curry((length, char, str) => (str || "").padStart(length, char));
+export const repeat = curry((length, str) => (str || "").repeat(length));
+export const replace = curry((regexp, newStr, str) =>
+  (str || "").replace(regexp, newStr)
+);
+export const split = curry((sep, str) => (str || "").split(sep));
+export const startsWith = curry((term, str) => (str || "").startsWith(term));
+export const substring = curry((start, end, str) => (str || "").substring(start, end));
+export const toLowerCase = str => (str || "").toLowerCase();
+export const toUpperCase = str => (str || "").toUpperCase();
+export const trim = str => (str || "").trim();
 
 // Array
 export const array = (length = 0, mapper = n => n, filter = () => true) =>

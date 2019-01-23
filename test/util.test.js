@@ -13,12 +13,16 @@ test("is", t => {
   t.is(false, is({ a: 1 })({ a: 1 }));
 });
 
-test("isAtKey: object", t => {
+test("isValueAt: object", t => {
   t.is(true, isValueAt("a")(2)({ a: 2 }));
   t.is(false, isValueAt("a")(3)({ a: 2 }));
 });
 
-test("isAtKey: array", t => {
+test("isValueAt: array", t => {
   t.is(true, isValueAt(1)(1)([0, 1, 2]));
   t.is(false, isValueAt(1)(2)([0, 1, 2]));
+});
+
+test("isValueAt: empty", t => {
+  t.is(false, isValueAt("a")(1)());
 });
