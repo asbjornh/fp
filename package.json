@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "ava",
-    "test:watch": "ava --watch"
+    "dev": "ava --watch"
   },
   "author": "Asbjørn Hegdahl",
   "license": "MIT",
