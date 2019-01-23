@@ -46,7 +46,7 @@ export const toUpperCase = str => (str || "").toUpperCase();
 export const trim = str => (str || "").trim();
 
 // Array
-export const array = (length = 0, mapper = n => n, filter = () => true) =>
+export const array = (length = 0, mapper = id, filter = yes) =>
   new Array(length).fill(0).reduce((a, _, i) => a.concat(filter(i) ? mapper(i) : []), []);
 export const concat = curry((b, a) => (a || []).concat(b || []));
 export const concatRight = curry((a, b) => (a || []).concat(b || []));
@@ -99,3 +99,4 @@ export const tan = deg => Math.tan(radians(deg));
 
 // Object
 export const assign = curry((b, a) => Object.assign({}, a, b));
+export const get = curry((key, obj) => (obj || {})[key]);
