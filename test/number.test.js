@@ -13,3 +13,4 @@ test("isEven: false", macro, false, isEven(3));
 test("isOdd: true", macro, true, isOdd(3));
 test("isOdd: false", macro, false, isOdd(2));
 test("toFixed", macro, "1.50", toFixed(2)(1.500001));
+test("toFixed: empty", macro, undefined, toFixed(2)());

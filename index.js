@@ -63,7 +63,7 @@ export const int = n => parseInt(n);
 export const float = n => parseFloat(n);
 export const isEven = n => n % 2 === 0;
 export const isOdd = n => !isEven(n);
-export const toFixed = curry((dec, num) => num.toFixed(dec));
+export const toFixed = curry((dec, num) => (num ? num.toFixed(dec) : num));
 
 // Math
 export const add = curry((b, a) => a + b);
