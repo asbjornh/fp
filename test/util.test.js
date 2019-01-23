@@ -1,28 +1,28 @@
 import test from "ava";
 
-import { is, isValueAt } from "../index";
+import { exists, id, no, or, yes } from "../index";
 
-test("is", t => {
-  t.is(true, is(2)(2));
-  t.is(true, is("a")("a"));
-  t.is(true, is(false)(false));
-  t.is(true, is(null)(null));
+const macro = (t, expected, input) => {
+  t.deepEqual(expected, input);
+};
 
-  t.is(false, is(2)(1));
-  t.is(false, is(2)("2"));
-  t.is(false, is({ a: 1 })({ a: 1 }));
+test("exists", t => {
+  t.is(true, exists(0));
+  t.is(true, exists(false));
+  t.is(true, exists(""));
+  t.is(false, exists());
+  t.is(false, exists(null));
 });
 
-test("isValueAt: object", t => {
-  t.is(true, isValueAt("a")(2)({ a: 2 }));
-  t.is(false, isValueAt("a")(3)({ a: 2 }));
+test("id", t => {
+  t.is(1, id(1));
+  t.is(undefined, id());
 });
 
-test("isValueAt: array", t => {
-  t.is(true, isValueAt(1)(1)([0, 1, 2]));
-  t.is(false, isValueAt(1)(2)([0, 1, 2]));
+test("or", t => {
+  t.is(1, or(0)(1));
+  t.is(0, or(0)());
 });
 
-test("isValueAt: empty", t => {
-  t.is(false, isValueAt("a")(1)());
-});
+test("no", macro, false, no());
+test("yes", macro, true, yes());

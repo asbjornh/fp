@@ -12,8 +12,20 @@ export const pipe = (value, ...funcs) => makePipe(...funcs)(value);
 export const trace = v => console.log(v) || v;
 
 // Util
+export const exists = a => a !== undefined && a !== null;
+export const id = x => x;
+export const or = curry((fallback, v) => (exists(v) ? v : fallback));
+export const no = () => false;
+export const yes = () => true;
+
+// Comparison
+export const gt = curry((b, a) => a > b);
+export const gte = curry((b, a) => a >= b);
 export const is = curry((a, b) => a === b);
-export const isValueAt = curry((key, v, obj) => (obj || {})[key] === v);
+export const isEven = n => n % 2 === 0;
+export const isOdd = n => !isEven(n);
+export const lt = curry((b, a) => a < b);
+export const lte = curry((b, a) => a <= b);
 
 // String
 export const charCodeAt = curry((index, str) => (str || "").charCodeAt(index));
@@ -61,8 +73,6 @@ export const sortBy = key => sort((a, b) => (a || {})[key] - (b || {})[key]);
 // Number
 export const int = n => parseInt(n);
 export const float = n => parseFloat(n);
-export const isEven = n => n % 2 === 0;
-export const isOdd = n => !isEven(n);
 export const toFixed = curry((dec, num) => (num ? num.toFixed(dec) : num));
 
 // Math
