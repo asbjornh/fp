@@ -15,6 +15,17 @@ padStart(4, "_")("A");
 
 These functions are mostly wrappers for native javascript things that aren't easily partially applied or piped. They are all so small that reading the [implementation](./index.js) is probably faster than reading their (lacking) documentation.
 
+## Notable core functions
+
+### reduce(_**func**: function, **initial**: any_): ((_**arr**: any[]_): any[])
+
+Note that the `func` needs to be a higher order unary function (returning another unary function).
+
+```js
+reduce(a => c => a + c, 0)([1, 2, 3]); // 6
+reduce(add, 0)([1, 2, 3]); // 6
+```
+
 ## Extra utils
 
 ### array(_**length**: string, **mapper**: function, **filter**: function_): any[]

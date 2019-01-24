@@ -57,7 +57,8 @@ export const indexOf = term => arr => sA(arr).indexOf(term);
 export const join = sep => arr => sA(arr).join(sep);
 export const length = arr => sA(arr).length;
 export const map = func => arr => sA(arr).map(func);
-export const reduce = (func, initial) => arr => sA(arr).reduce(func, initial);
+export const reduce = (func, initial) => arr =>
+  sA(arr).reduce((a, c) => func(c)(a), initial);
 export const reduceRight = (func, initial) => arr => sA(arr).reduceRight(func, initial);
 export const reverse = arr => sA(arr).reverse();
 export const slice = (begin, end) => arr => sA(arr).slice(begin, end);
@@ -93,3 +94,18 @@ export const tan = deg => Math.tan(radians(deg));
 // Object
 export const assign = b => a => Object.assign({}, a, b);
 export const get = key => obj => (obj || {})[key];
+
+const reducePipe = (binary, ...funcs) => a => c =>
+  binary(a)(
+    pipe(
+      c,
+      ...funcs
+    )
+  );
+
+const a = reduce(add, 1)([1, 2, 3]);
+const b = reduce(concat, [])([[1], [2], [3]]);
+const c = reduce(reducePipe(concat, add(1), multiply(2)), [])([1, 2, 3]);
+console.log(a);
+console.log(b);
+console.log(c);
