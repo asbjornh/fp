@@ -29,11 +29,11 @@ test("subtract", macro, 2, subtract(4)(6));
 
 test("max", macro, 2, max([1, 2, 0]));
 test("min", macro, 0, min([1, 2, 0]));
-test("clamp upper", macro, 2, clamp(0)(2)(4));
-test("clamp lower", macro, 0, clamp(0)(2)(-4));
+test("clamp upper", macro, 2, clamp(0, 2)(4));
+test("clamp lower", macro, 0, clamp(0, 2)(-4));
 test("pow", macro, 100, pow(2)(10));
 test("random", macro, "number", typeof random(1)());
-test("rangeMap", macro, 15, rangeMap(0)(1)(10)(20)(0.5));
+test("rangeMap", macro, 15, rangeMap(0, 1, 10, 20)(0.5));
 test("sum", macro, 3, sum([0, 1, 2]));
 
 test("radians", macro, Math.PI, radians(180));
