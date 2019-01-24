@@ -17,6 +17,7 @@ export const gte = b => a => a >= b;
 export const is = a => b => a === b;
 export const isEven = n => n % 2 === 0;
 export const isOdd = n => !isEven(n);
+export const isNumber = n => typeof n === "number";
 export const lt = b => a => a < b;
 export const lte = b => a => a <= b;
 
@@ -41,12 +42,13 @@ export const trim = str => sS(str).trim();
 
 // safeArray
 const sA = arr => (Array.isArray(arr) ? arr : []);
+const ensureArray = a => (Array.isArray(a) ? a : exists(a) ? [a] : []);
 
 // Array
 export const array = (length = 0, mapper = id, filter = yes) =>
   new Array(length).fill(0).reduce((a, _, i) => a.concat(filter(i) ? mapper(i) : []), []);
-export const concat = b => a => sA(a).concat(b || []); // Doesn't concat undefined/null
-export const concatRight = a => b => sA(a).concat(b || []); // Doesn't concat undefined/null
+export const concat = b => a => ensureArray(a).concat(ensureArray(b)); // Doesn't concat undefined/null
+export const concatRight = a => b => ensureArray(a).concat(ensureArray(b)); // Doesn't concat undefined/null
 export const every = func => arr => sA(arr).every(func);
 export const filter = func => arr => sA(arr).filter(func);
 export const find = func => arr => sA(arr).find(func);
@@ -65,6 +67,8 @@ export const slice = (begin, end) => arr => sA(arr).slice(begin, end);
 export const some = func => arr => sA(arr).some(func);
 export const sort = func => arr => sA(arr).sort(func);
 export const sortBy = key => sort((a, b) => (a || {})[key] - (b || {})[key]);
+export const tupleMap = (left = id, right = id) => ([l, r]) => [left(l), right(r)];
+// TODO: tupleMap ?
 
 // Number
 export const int = n => parseInt(n);
@@ -84,7 +88,7 @@ export const pow = exp => base => Math.pow(base, exp);
 export const random = (a = 1) => () => a * Math.random();
 export const rangeMap = (inMin, inMax, outMin, outMax) => n =>
   ((n - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-export const sum = reduce((a, c) => add(a)(c), 0);
+export const sum = reduce(add, 0);
 
 export const radians = deg => (deg * Math.PI) / 180;
 export const cos = deg => Math.cos(radians(deg));
@@ -94,18 +98,27 @@ export const tan = deg => Math.tan(radians(deg));
 // Object
 export const assign = b => a => Object.assign({}, a, b);
 export const get = key => obj => (obj || {})[key];
+export const tupleToObject = (mapKey = id, mapValue = id) => ([k, v]) => ({
+  [mapKey(k)]: mapValue(v)
+});
 
-const reducePipe = (binary, ...funcs) => a => c =>
-  binary(a)(
-    pipe(
-      c,
-      ...funcs
-    )
-  );
+const reduceMore = (reducer, init, map = id, filter = yes) => arr =>
+  sA(arr).reduce((a, c) => (filter(c) ? reducer(map(c))(a) : a), init);
 
-const a = reduce(add, 1)([1, 2, 3]);
-const b = reduce(concat, [])([[1], [2], [3]]);
-const c = reduce(reducePipe(concat, add(1), multiply(2)), [])([1, 2, 3]);
-console.log(a);
-console.log(b);
-console.log(c);
+const { log } = console;
+log(reduce(add, 1)([1, 2, 3]));
+log(reduceMore(concat, [])([[1], [2], [3]]));
+log(reduceMore(concat, [], makePipe(add(1), multiply(2)))([1, 2, 3]));
+
+map(makePipe(add(1), multiply(2)))([1, 2, 3]);
+[1, 2, 3].reduce((a, c) => a.concat((c + 1) * 2), []);
+
+const isAtKey = (key, predicate) => makePipe(get(key), predicate);
+
+const o = { a: 1, b: 2, c: 3, d: 4, e: "5" };
+
+const a = reduceMore(assign, {}, tupleToObject(id, pow(2)), isAtKey(1, isNumber))(
+  Object.entries(o)
+);
+
+log(a);
