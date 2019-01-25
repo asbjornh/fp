@@ -18,7 +18,6 @@ import {
   length,
   map,
   reduce,
-  reduceRight,
   reverse,
   slice,
   some,
@@ -56,10 +55,8 @@ test("length", macro, 3, length([0, 1, 2]));
 test("length: empty", macro, 0, length());
 test("map", macro, [0, 2, 4], map(multiply(2))([0, 1, 2]));
 test("map: empty", macro, [], map(multiply(2))());
-test("reduce", macro, 3, reduce((a, c) => a + c, 0)([0, 1, 2]));
-test("reduce: empty", macro, 0, reduce((a, c) => a + c, 0)());
-test("reduceRight", macro, "321", reduceRight((a, c) => a + String(c), "")([1, 2, 3]));
-test("reduceRight: empty", macro, "", reduceRight((a, c) => a + String(c), "")());
+test("reduce", macro, 3, reduce(c => a => a + c, 0)([0, 1, 2]));
+test("reduce: empty", macro, 0, reduce(c => a => a + c, 0)());
 test("reverse", macro, [3, 2, 1], reverse([1, 2, 3]));
 test("reverse: empty", macro, [], reverse());
 test("slice", macro, [1, 2], slice(1, 3)([0, 1, 2]));

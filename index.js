@@ -1,5 +1,4 @@
-export const makePipe = (...funcs) => value => funcs.reduce((a, func) => func(a), value);
-export const pipe = (value, ...funcs) => makePipe(...funcs)(value);
+export const Pipe = (...funcs) => value => funcs.reduce((a, func) => func(a), value);
 
 // eslint-disable-next-line no-console
 export const trace = v => console.log(v) || v;
@@ -10,16 +9,6 @@ export const id = x => x;
 export const or = fallback => v => (exists(v) ? v : fallback);
 export const no = () => false;
 export const yes = () => true;
-
-// Comparison
-export const gt = b => a => a > b;
-export const gte = b => a => a >= b;
-export const is = a => b => a === b;
-export const isEven = n => n % 2 === 0;
-export const isOdd = n => !isEven(n);
-export const isNumber = n => typeof n === "number";
-export const lt = b => a => a < b;
-export const lte = b => a => a <= b;
 
 // safeString
 const sS = str => (exists(str) && typeof str === "string" ? str : "");
@@ -44,6 +33,11 @@ export const trim = str => sS(str).trim();
 const sA = arr => (Array.isArray(arr) ? arr : []);
 const ensureArray = a => (Array.isArray(a) ? a : exists(a) ? [a] : []);
 
+const plainReduce = (func, initial) => arr =>
+  sA(arr).reduce((a, c) => func(c)(a), initial);
+const mapFilterReduce = (reducer, initial, map, filter = yes) => arr =>
+  sA(arr).reduce((a, c) => (filter(c) ? reducer(map(c))(a) : a), initial);
+
 // Array
 export const array = (length = 0, mapper = id, filter = yes) =>
   new Array(length).fill(0).reduce((a, _, i) => a.concat(filter(i) ? mapper(i) : []), []);
@@ -59,16 +53,32 @@ export const indexOf = term => arr => sA(arr).indexOf(term);
 export const join = sep => arr => sA(arr).join(sep);
 export const length = arr => sA(arr).length;
 export const map = func => arr => sA(arr).map(func);
-export const reduce = (func, initial) => arr =>
-  sA(arr).reduce((a, c) => func(c)(a), initial);
-export const reduceRight = (func, initial) => arr => sA(arr).reduceRight(func, initial);
+export const reduce = (reducer, initial, map, filter) =>
+  map ? mapFilterReduce(reducer, initial, map, filter) : plainReduce(reducer, initial);
 export const reverse = arr => sA(arr).reverse();
 export const slice = (begin, end) => arr => sA(arr).slice(begin, end);
 export const some = func => arr => sA(arr).some(func);
 export const sort = func => arr => sA(arr).sort(func);
 export const sortBy = key => sort((a, b) => (a || {})[key] - (b || {})[key]);
-export const tupleMap = (left = id, right = id) => ([l, r]) => [left(l), right(r)];
-// TODO: tupleMap ?
+// TODO: test:
+export const tupleMap = (mapL = id, mapR = id) => ([l, r]) => [mapL(l), mapR(r)];
+
+// Comparison
+export const gt = b => a => a > b;
+export const gte = b => a => a >= b;
+export const is = a => b => a === b;
+export const isEven = n => n % 2 === 0;
+export const isOdd = n => !isEven(n);
+export const isNumber = n => typeof n === "number";
+export const isString = n => typeof n === "string";
+export const lt = b => a => a < b;
+export const lte = b => a => a <= b;
+
+// TODO: tests
+export const isAll = (...predicates) => value =>
+  reduce(pred => a => a && pred(value), true)(predicates);
+export const isSome = (...predicates) => value =>
+  reduce(pred => a => a || pred(value), false)(predicates);
 
 // Number
 export const int = n => parseInt(n);
@@ -98,27 +108,44 @@ export const tan = deg => Math.tan(radians(deg));
 // Object
 export const assign = b => a => Object.assign({}, a, b);
 export const get = key => obj => (obj || {})[key];
-export const tupleToObject = (mapKey = id, mapValue = id) => ([k, v]) => ({
-  [mapKey(k)]: mapValue(v)
-});
+export const getMany = (...keys) => obj => reduce(c => get(c), obj)(keys);
+export const tupleToObject = ([k, v]) => ({ [k]: v });
+export const objectMap = (mapKey, mapValue, filterKey = yes, filterValue = yes) => {
+  const map = Pipe(tupleMap(mapKey, mapValue), tupleToObject);
+  const filter = isAll(Pipe(get(0), filterKey), Pipe(get(1), filterValue));
+  return Pipe(Object.entries, reduce(assign, {}, map, filter));
+};
 
-const reduceMore = (reducer, init, map = id, filter = yes) => arr =>
-  sA(arr).reduce((a, c) => (filter(c) ? reducer(map(c))(a) : a), init);
+const abc = { a: { b: { c: 1 } } };
+console.log(getMany("a", "d", "d")(abc));
 
 const { log } = console;
 log(reduce(add, 1)([1, 2, 3]));
-log(reduceMore(concat, [])([[1], [2], [3]]));
-log(reduceMore(concat, [], makePipe(add(1), multiply(2)))([1, 2, 3]));
+log(reduce(concat, [])([[1], [2], [3]]));
+log(reduce(concat, [], Pipe(add(1), multiply(2)))([1, 2, 3]));
 
-map(makePipe(add(1), multiply(2)))([1, 2, 3]);
+map(Pipe(add(1), multiply(2)))([1, 2, 3]);
 [1, 2, 3].reduce((a, c) => a.concat((c + 1) * 2), []);
 
-const isAtKey = (key, predicate) => makePipe(get(key), predicate);
+const isAtKey = (key, predicate) => Pipe(get(key), predicate);
 
-const o = { a: 1, b: 2, c: 3, d: 4, e: "5" };
+const o = { a: 1, b: 2, c: 3, d: 4, e: "5", 6: 6, 7: "a" };
 
-const a = reduceMore(assign, {}, tupleToObject(id, pow(2)), isAtKey(1, isNumber))(
+const squareValues = Pipe(tupleMap(id, pow(2)), tupleToObject);
+const valueIsNumber = isAtKey(1, isNumber);
+const keyIsString = isAtKey(0, n => isNaN(Number(n)));
+
+const b = map(get("a"))([o, o, o]);
+
+log(b);
+
+const a = reduce(assign, {}, squareValues, isAll(keyIsString, valueIsNumber))(
   Object.entries(o)
 );
 
 log(a);
+
+const incrementEvenValues = objectMap(id, add(1), yes, isEven);
+log(incrementEvenValues({ a: 1, b: 2, c: 3, d: 4 })); // { a_new: 2, b_new: 3, c_new: 4 }
+
+map(Pipe(get("node"), tupleMap(get("key.name"), get("value"), tupleToObject)));

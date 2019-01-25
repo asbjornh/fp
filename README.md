@@ -17,13 +17,26 @@ These functions are mostly wrappers for native javascript things that aren't eas
 
 ## Notable core functions
 
-### reduce(_**func**: function, **initial**: any_): ((_**arr**: any[]_) => any[])
+### reduce(_**reducer**: function, **initial**: any, **map?**: function, **filter?**: function_): ((_**arr**: any[]_) => any[])
 
-Note that the `func` needs to be a higher order unary function (returning another unary function).
+Note that `reducer` needs to be a higher order unary function (returning another unary function) and that the order of the current and accumulator are reversed. This makes it possible to use other functions from this package as the `reducer`.
 
 ```js
 reduce(curr => accum => accum + curr, 0)([1, 2, 3]); // 6
 reduce(add, 0)([1, 2, 3]); // 6
+reduce(concat, [])([[1], [2], [3]]);
+```
+
+`map` and `filter` can be used to do many operations that otherwise would require iterating over a list many times, like `[].map(fn).filter(fn).reduce(fn)` which can be orders of magnitude slower.
+
+```js
+const numbers = [1, 2, 3, 4];
+
+// 4 iterations
+reduce(add, 0, pow(2), isEven)(numbers); // 20
+
+// 4 + 2 + 2 iterations
+Pipe(filter(isEven), map(pow(2)), reduce(add))(numbers); // 20
 ```
 
 ## Extra utils
@@ -47,7 +60,7 @@ array(5, pow(2), isEven); // Using other utils from this package
 
 In both cases, the output is `[0, 4, 16]`
 
-### makePipe(_...funcs: function_): function
+### Pipe(_...funcs: function_): function
 
 Performs left-to-right function composition. Mostly like Ramdas [pipe](https://ramdajs.com/docs/#pipe) except all functions must be unary.
 
@@ -58,28 +71,15 @@ addTwoAndDouble(1); // 6
 [1, 2].map(addTwoAndDouble); // [6, 8]
 ```
 
-### pipe(_**value**: any, ...**funcs**: function_): any
-
-Emulates the behaviour of the proposed [pipeline operator](https://github.com/tc39/proposal-pipeline-operator).
-
-```js
-pipe(
-  1,
-  add(2),
-  multiply(2)
-); // 6
-```
-
 ### trace(_**value**: any_): value
 
 Accepts a single value, logs it using `console.log` and returns the value. Useful for debugging pipelines.
 
 ```js
-pipe(
-  1,
+Pipe(
   add(2),
   trace, // logs "3" to the console
   multiply(2),
   trace // Logs "6" to the console
-);
+)(1);
 ```
