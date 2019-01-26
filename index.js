@@ -10,6 +10,17 @@ export const or = fallback => v => (exists(v) ? v : fallback);
 export const no = () => false;
 export const yes = () => true;
 
+// Predicates
+export const gt = b => a => a > b;
+export const gte = b => a => a >= b;
+export const is = a => b => a === b;
+export const isEven = n => n % 2 === 0;
+export const isOdd = n => !isEven(n);
+export const isNumber = n => typeof n === "number";
+export const isString = n => typeof n === "string";
+export const lt = b => a => a < b;
+export const lte = b => a => a <= b;
+
 // safeString
 const sS = str => (exists(str) && typeof str === "string" ? str : "");
 
@@ -47,32 +58,24 @@ export const every = func => arr => sA(arr).every(func);
 export const filter = func => arr => sA(arr).filter(func);
 export const find = func => arr => sA(arr).find(func);
 export const findIndex = func => arr => sA(arr).findIndex(func);
-export const forEach = func => arr => sA(arr).forEach(func);
+export const forEach = (...funcs) => arr => sA(arr).forEach(Pipe(...funcs));
 export const includes = thing => arr => sA(arr).includes(thing);
 export const indexOf = term => arr => sA(arr).indexOf(term);
 export const join = sep => arr => sA(arr).join(sep);
 export const length = arr => sA(arr).length;
-export const map = func => arr => sA(arr).map(func);
+export const map = (...funcs) => arr => sA(arr).map(Pipe(...funcs));
 export const reduce = (reducer, initial, map, filter) =>
   map ? mapFilterReduce(reducer, initial, map, filter) : plainReduce(reducer, initial);
 export const reverse = arr => sA(arr).reverse();
 export const slice = (begin, end) => arr => sA(arr).slice(begin, end);
 export const some = func => arr => sA(arr).some(func);
 export const sort = func => arr => sA(arr).sort(func);
-export const sortBy = key => sort((a, b) => (a || {})[key] - (b || {})[key]);
-// TODO: test:
-export const tupleMap = (mapL = id, mapR = id) => ([l, r]) => [mapL(l), mapR(r)];
-
-// Comparison
-export const gt = b => a => a > b;
-export const gte = b => a => a >= b;
-export const is = a => b => a === b;
-export const isEven = n => n % 2 === 0;
-export const isOdd = n => !isEven(n);
-export const isNumber = n => typeof n === "number";
-export const isString = n => typeof n === "string";
-export const lt = b => a => a < b;
-export const lte = b => a => a <= b;
+export const sortBy = key =>
+  sort((a, b) => {
+    const A = (a || {})[key];
+    const B = (b || {})[key];
+    return lt(B)(A) ? -1 : gt(B)(A) ? 1 : 0;
+  });
 
 // TODO: tests
 export const isAll = (...predicates) => value =>
@@ -107,31 +110,35 @@ export const tan = deg => Math.tan(radians(deg));
 
 // Object
 export const assign = b => a => Object.assign({}, a, b);
-export const get = key => obj => (obj || {})[key];
-export const getMany = (...keys) => obj => reduce(c => get(c), obj)(keys);
-export const tupleToObject = ([k, v]) => ({ [k]: v });
-export const objectMap = (mapKey, mapValue, filterKey = yes, filterValue = yes) => {
-  const map = Pipe(tupleMap(mapKey, mapValue), tupleToObject);
-  const filter = isAll(Pipe(get(0), filterKey), Pipe(get(1), filterValue));
-  return Pipe(Object.entries, reduce(assign, {}, map, filter));
-};
+export const get = (...keys) => obj => reduce(key => a => (a || {})[key], obj)(keys);
+export const has = (...keys) => Pipe(get(...keys), exists);
+export const objectFromEntry = ([k, v]) => ({ [k]: v });
+// TODO: test:
+export const mapEntry = (...mapKey) => (...mapValue) => ([k, v]) => [
+  Pipe(...mapKey)(k),
+  Pipe(...mapValue)(v)
+];
+export const mapObject = (map, filter) =>
+  Pipe(Object.entries, reduce(assign, {}, Pipe(map, objectFromEntry), filter));
 
 const abc = { a: { b: { c: 1 } } };
-console.log(getMany("a", "d", "d")(abc));
+console.log(get("a", "b", "c")(abc));
 
 const { log } = console;
 log(reduce(add, 1)([1, 2, 3]));
 log(reduce(concat, [])([[1], [2], [3]]));
-log(reduce(concat, [], Pipe(add(1), multiply(2)))([1, 2, 3]));
+log(reduce(concat, [], Pipe(add(1), multiply(2)), isEven)([1, 2, 3]));
 
-map(Pipe(add(1), multiply(2)))([1, 2, 3]);
+map(add(1), multiply(2))([1, 2, 3]);
 [1, 2, 3].reduce((a, c) => a.concat((c + 1) * 2), []);
 
+// TODO: test
 const isAtKey = (key, predicate) => Pipe(get(key), predicate);
+const isAtIndex = (index, predicate) => arr => predicate(sA(arr)[index]);
 
 const o = { a: 1, b: 2, c: 3, d: 4, e: "5", 6: 6, 7: "a" };
 
-const squareValues = Pipe(tupleMap(id, pow(2)), tupleToObject);
+const squareValues = Pipe(mapEntry(id)(pow(2)), objectFromEntry);
 const valueIsNumber = isAtKey(1, isNumber);
 const keyIsString = isAtKey(0, n => isNaN(Number(n)));
 
@@ -145,7 +152,13 @@ const a = reduce(assign, {}, squareValues, isAll(keyIsString, valueIsNumber))(
 
 log(a);
 
-const incrementEvenValues = objectMap(id, add(1), yes, isEven);
+const incrementEvenValues = mapObject(mapEntry(id)(add(1)), isAtIndex(1, isEven));
 log(incrementEvenValues({ a: 1, b: 2, c: 3, d: 4 })); // { a_new: 2, b_new: 3, c_new: 4 }
 
-map(Pipe(get("node"), tupleMap(get("key.name"), get("value"), tupleToObject)));
+// prettier-ignore
+mapObject(
+  Pipe(
+    get("node"),
+    mapEntry(get("key", "name"), get("value"))
+  )
+)({});
