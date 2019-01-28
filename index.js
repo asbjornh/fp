@@ -105,8 +105,7 @@ export const sum = reduce(add, 0);
 // Object
 export const assign = b => a => Object.assign({}, a, b);
 export const has = (keys = []) => obj => exists(get(keys)(obj));
-export const objectFromEntry = ([k, v]) => ({ [k]: v });
-// TODO: test:
-export const mapEntry = (mapKey, mapValue) => ([k, v]) => [mapKey(k), mapValue(v)];
-export const mapObject = (map, filter) => obj =>
+export const objectFromEntry = ([k, v] = []) => (exists(k) ? { [k]: v } : {});
+export const mapEntry = (mapKey, mapValue) => ([k, v] = []) => [mapKey(k), mapValue(v)];
+export const mapObject = (map, filter) => (obj = {}) =>
   reduce(assign, {}, Pipe(map, objectFromEntry), filter)(Object.entries(obj));
