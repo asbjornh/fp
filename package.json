@@ -1,11 +1,12 @@
 {
-  "name": "@asbjornh/fp",
-  "version": "1.0.0",
+  "name": "kompis",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ava",
-    "dev": "ava --watch"
+    "docs": "node codegen/generate-readme.js",
+    "dev": "ava --watch",
+    "test": "ava"
   },
   "author": "Asbjørn Hegdahl",
   "license": "MIT",
