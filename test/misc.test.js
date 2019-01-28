@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { exists, id, no, or, yes } from "../index";
+import { exists, id, no, noop, or, yes } from "../index";
 
 const macro = (t, expected, input) => {
   t.deepEqual(expected, input);
@@ -26,3 +26,5 @@ test("or", t => {
 
 test("no", macro, false, no());
 test("yes", macro, true, yes());
+
+test("noop", macro, undefined, noop(1));
