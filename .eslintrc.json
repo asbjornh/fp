@@ -8,8 +8,15 @@
   "rules": {
     "no-console": 1,
     "no-undef": 2,
-    "no-unused-vars": 1,
     "no-use-before-define": 2,
-    "no-warning-comments": 2
+    "no-warning-comments": 2,
+    "no-unused-vars": [
+      1,
+      {
+        "vars": "all",
+        "args": "after-used",
+        "argsIgnorePattern": "(^_|^next$)"
+      }
+    ]
   }
 }
