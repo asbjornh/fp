@@ -16,10 +16,6 @@ import {
   lte
 } from "../index";
 
-const macro = (t, expected, input) => {
-  t.is(expected, input);
-};
-
 test("gt", t => {
   t.is(true, gt(2)(3));
   t.is(false, gt(2)(2));
@@ -43,12 +39,17 @@ test("is", t => {
   t.is(false, is({ a: 1 })({ a: 1 }));
 });
 
-test("isEven: true", macro, true, isEven(2));
-test("isEven: false", macro, false, isEven(3));
-test("isEven: NaN", macro, false, isEven("2"));
-test("isOdd: true", macro, true, isOdd(3));
-test("isOdd: false", macro, false, isOdd(2));
-test("isOdd: NaN", macro, false, isOdd("3"));
+test("isEven", t => {
+  t.is(true, isEven(2));
+  t.is(false, isEven(3));
+  t.is(false, isEven("2"));
+});
+
+test("isOdd", t => {
+  t.is(true, isOdd(3));
+  t.is(false, isOdd(2));
+  t.is(false, isOdd("3"));
+});
 
 test("lt", t => {
   t.is(false, lt(2)(3));
