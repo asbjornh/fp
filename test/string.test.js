@@ -4,7 +4,6 @@ import {
   charCodeAt,
   endsWith,
   fromCharCode,
-  match,
   padEnd,
   padStart,
   repeat,
@@ -28,8 +27,6 @@ test("endsWith: false", macro, false, endsWith("A")("ABC"));
 test("endsWith: empty", macro, false, endsWith("A")());
 // Should ignore extra arguments:
 test("fromCharCode", macro, "A", fromCharCode(65, false, false));
-test("match", macro, ["A", "C"], match(/[A-Z]/g)("AbC"));
-test("match: empty", macro, null, match(/[A-Z]/g)());
 test("padEnd", macro, "A__", padEnd(3, "_")("A"));
 test("padEnd: empty", macro, "___", padEnd(3, "_")());
 test("padStart", macro, "__A", padStart(3, "_")("A"));

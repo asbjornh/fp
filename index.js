@@ -14,10 +14,10 @@ export const yes = () => true;
 export const gt = b => a => a > b;
 export const gte = b => a => a >= b;
 export const is = a => b => a === b;
-export const isEven = n => n % 2 === 0;
-export const isOdd = n => !isEven(n);
 export const isNumber = n => typeof n === "number";
 export const isString = n => typeof n === "string";
+export const isEven = n => isNumber(n) && n % 2 === 0;
+export const isOdd = n => isNumber(n) && n % 2 !== 0;
 export const lt = b => a => a < b;
 export const lte = b => a => a <= b;
 

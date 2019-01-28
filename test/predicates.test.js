@@ -31,8 +31,10 @@ test("is", t => {
 
 test("isEven: true", macro, true, isEven(2));
 test("isEven: false", macro, false, isEven(3));
+test("isEven: NaN", macro, false, isEven("2"));
 test("isOdd: true", macro, true, isOdd(3));
 test("isOdd: false", macro, false, isOdd(2));
+test("isOdd: NaN", macro, false, isOdd("3"));
 
 test("lt", t => {
   t.is(false, lt(2)(3));
