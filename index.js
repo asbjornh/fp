@@ -97,10 +97,8 @@ export const max = arr => Math.max(...arr);
 export const min = arr => Math.min(...arr);
 export const clamp = (min, max) => n => Math.min(max, Math.max(min, n));
 export const pow = exp => base => Math.pow(base, exp);
-export const random = (a = 1) => () => a * Math.random();
 export const rangeMap = (inMin, inMax, outMin, outMax) => n =>
   ((n - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-export const sum = reduce(add, 0);
 
 // Object
 export const assign = b => a => Object.assign({}, a, b);
