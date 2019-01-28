@@ -129,7 +129,7 @@ matcher(2); // "2 is even!"
 matcher("a"); // "No match"
 ```
 
-### Pipe(_**...funcs**: ...function_): function
+### Pipe(_**...funcs**: function[]_): function
 
 Performs left-to-right function composition. Mostly like Ramdas [pipe](https://ramdajs.com/docs/#pipe) except all functions must be unary.
 
@@ -140,7 +140,7 @@ addTwoAndDouble(1); // 6
 [1, 2].map(addTwoAndDouble); // [6, 8]
 ```
 
-### trace(_**value**: any_): value
+### trace(_**value**: any_): any
 
 Accepts a single value, logs it using `console.log` and returns the value. Useful for debugging pipelines.
 
