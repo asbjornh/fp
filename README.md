@@ -60,7 +60,31 @@ array(5, pow(2), isEven); // Using other utils from this package
 
 In both cases, the output is `[0, 4, 16]`
 
-### Pipe(_...funcs: function_): function
+### match(_**...patterns**: ...[predicate: function, map: function]_): (value: any) => any
+
+Inspired by (but not the same as) [pattern matching](https://stackoverflow.com/questions/2502354/what-is-pattern-matching-in-functional-languages) from other functional languages.
+
+```js
+const matcher = match([isEven, () => "Is even!"], [isOdd, () => "Is odd!"]);
+matcher(1); // "Is odd!"
+matcher(2); // "Is even!"
+matcher("a"); // undefined
+```
+
+If you need a fallback pattern, you can use the `otherwise` function in the _**last**_ pattern (`otherwise` always returns `true`).
+
+```js
+const matcher = match(
+  [isEven, v => `${v} is even!`],
+  [isOdd, v => `${v} is odd!`],
+  [otherwise, () => "No match"]
+);
+matcher(1); // "1 is odd!"
+matcher(2); // "2 is even!"
+matcher("a"); // "No match"
+```
+
+### Pipe(_**...funcs**: ...function_): function
 
 Performs left-to-right function composition. Mostly like Ramdas [pipe](https://ramdajs.com/docs/#pipe) except all functions must be unary.
 
