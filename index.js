@@ -12,19 +12,17 @@ export const yes = () => true;
 // Predicates
 export const gt = b => a => a > b;
 export const gte = b => a => a >= b;
+export const lt = b => a => a < b;
+export const lte = b => a => a <= b;
 export const is = a => b => a === b;
 export const isNumber = n => typeof n === "number";
 export const isString = n => typeof n === "string";
 export const isEven = n => isNumber(n) && n % 2 === 0;
 export const isOdd = n => isNumber(n) && n % 2 !== 0;
-export const lt = b => a => a < b;
-export const lte = b => a => a <= b;
-
-// TODO: test
 export const isAtKey = (key, predicate) => v => predicate(get(key)(v));
 export const isAtIndex = (index, predicate) => isAtKey(index, predicate);
 export const isAll = (...predicates) => v =>
-  predicates.reduce((a, pred) => a && pred(v), true);
+  predicates.reduce((a, pred) => a && pred(v), predicates.length ? true : false);
 export const isSome = (...predicates) => v =>
   predicates.reduce((a, pred) => a || pred(v), false);
 

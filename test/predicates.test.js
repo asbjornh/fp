@@ -1,6 +1,20 @@
 import test from "ava";
 
-import { gt, gte, is, isEven, isOdd, lt, lte } from "../index";
+import {
+  gt,
+  gte,
+  is,
+  isAll,
+  isAtKey,
+  isAtIndex,
+  isEven,
+  isNumber,
+  isOdd,
+  isSome,
+  isString,
+  lt,
+  lte
+} from "../index";
 
 const macro = (t, expected, input) => {
   t.is(expected, input);
@@ -46,4 +60,45 @@ test("lte", t => {
   t.is(false, lte(2)(3));
   t.is(true, lte(2)(2));
   t.is(true, lte(2)(1));
+});
+
+test("isNumber", t => {
+  t.is(true, isNumber(1));
+  t.is(true, isNumber(1.5));
+  t.is(false, isNumber("1"));
+  t.is(false, isNumber());
+});
+
+test("isAtIndex", t => {
+  const arr = [1, 1, 4];
+  t.is(true, isAtIndex(2, isEven)(arr));
+  t.is(false, isAtIndex(0, isEven)(arr));
+  t.is(false, isAtIndex(10, isEven)(arr));
+});
+
+test("isAtKey", t => {
+  const obj = { a: 2, b: 3 };
+  t.is(true, isAtKey("a", isEven)(obj));
+  t.is(false, isAtKey("b", isEven)(obj));
+  t.is(false, isAtKey("x", isEven)(obj));
+});
+
+test("isAll", t => {
+  t.is(true, isAll(isNumber, isEven)(2));
+  t.is(false, isAll(isNumber, isOdd)(2));
+  t.is(false, isAll(isNumber, isOdd)("1"));
+  t.is(false, isAll()());
+});
+
+test("isSome", t => {
+  t.is(true, isSome(isString, isEven)(2));
+  t.is(true, isSome(isString, isEven)("1"));
+  t.is(false, isSome(isString, isEven)(1));
+  t.is(false, isSome()());
+});
+
+test("isString", t => {
+  t.is(true, isString("a"));
+  t.is(true, isString(""));
+  t.is(false, isString(1));
 });
