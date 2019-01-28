@@ -1,7 +1,7 @@
 import { get, match, Pipe } from "./utils";
 export { get, match, Pipe };
 
-// Util
+// Misc
 export const exists = a => a !== undefined && a !== null;
 export const id = x => x;
 export const or = fallback => v => (exists(v) ? v : fallback);

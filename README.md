@@ -94,7 +94,18 @@ array(5, pow(2), isEven); // Using other utils from this package
 
 In both cases, the output is `[0, 4, 16]`
 
-### match(_**...patterns**: ...[predicate: function, map: function]_): (value: any) => any
+### get(_**keys**: string | number | (string | number)[], **default**: any_): (obj: object | array) => any
+
+Safely get children properties of an object (like `lodash/get` with different syntax).
+
+```js
+const obj = { a: ["nope", "yep"] };
+get("a")(obj); // ["nope", "yep"]
+get(["a", 1])(obj); // "yep"
+get(["a", "b", "c"], "nothing")(obj); // "nothing"
+```
+
+### match(_**...patterns**: [predicate: function, map: function][]_): (value: any) => any
 
 Inspired by (but not the same as) [pattern matching](https://stackoverflow.com/questions/2502354/what-is-pattern-matching-in-functional-languages) from other functional languages.
 
@@ -148,7 +159,7 @@ Pipe(
 import { get, match, Pipe } from "./utils";
 export { get, match, Pipe };
 
-// Util
+// Misc
 export const exists = a => a !== undefined && a !== null;
 export const id = x => x;
 export const or = fallback => v => (exists(v) ? v : fallback);
@@ -216,10 +227,10 @@ export const reverse = arr => sA(arr).reverse();
 export const slice = (begin, end) => arr => sA(arr).slice(begin, end);
 export const some = func => arr => sA(arr).some(func);
 export const sort = func => arr => sA(arr).sort(func);
-export const sortBy = (...keys) =>
+export const sortBy = (keys = []) =>
   sort((a, b) => {
-    const A = get(...keys)(a);
-    const B = get(...keys)(b);
+    const A = get(keys)(a);
+    const B = get(keys)(b);
     return lt(B)(A) ? -1 : gt(B)(A) ? 1 : 0;
   });
 
@@ -253,7 +264,7 @@ export const sum = reduce(add, 0);
 
 // Object
 export const assign = b => a => Object.assign({}, a, b);
-export const has = (...keys) => obj => exists(get(...keys)(obj));
+export const has = (keys = []) => obj => exists(get(keys)(obj));
 export const objectFromEntry = ([k, v]) => ({ [k]: v });
 // TODO: test:
 export const mapEntry = (mapKey, mapValue) => ([k, v]) => [mapKey(k), mapValue(v)];
