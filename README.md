@@ -49,33 +49,11 @@ divideByTwo(4); // 2
 divide(2)(4); // also 2
 ```
 
-## Notable core functions
+## Utils
 
-### reduce(_**reducer**: function, **initial**: any, **map?**: function, **filter?**: function_): ((_**arr**: any[]_) => any[])
+### array
 
-Note that `reducer` needs to be a higher order unary function (returning another unary function) and that the order of the current and accumulator are reversed. This makes it possible to use other functions from this package as the `reducer`.
-
-```js
-reduce(curr => accum => accum + curr, 0)([1, 2, 3]); // 6
-reduce(add, 0)([1, 2, 3]); // 6
-reduce(concat, [])([[1], [2], [3]]);
-```
-
-`map` and `filter` can be used to do many operations that otherwise would require iterating over a list many times, like `[].map(fn).filter(fn).reduce(fn)` which can be orders of magnitude slower.
-
-```js
-const numbers = [1, 2, 3, 4];
-
-// 4 iterations
-reduce(add, 0, pow(2), isEven)(numbers); // 20
-
-// 4 + 2 + 2 iterations
-Pipe(filter(isEven), map(pow(2)), reduce(add))(numbers); // 20
-```
-
-## Extra utils
-
-### array(_**length**: string, **mapper**: function, **filter**: function_): any[]
+array(_**length**: string, **mapper**: function, **filter**: function_): any[]
 
 Inspired by list comprehension in other languages.
 
@@ -94,7 +72,9 @@ array(5, pow(2), isEven); // Using other utils from this package
 
 In both cases, the output is `[0, 4, 16]`
 
-### get(_**keys**: string | number | (string | number)[], **default**: any_): (obj: object | array) => any
+### get
+
+get(_**keys**: string | number | (string | number)[], **default**: any_): (obj: object | array) => any
 
 Safely get children properties of an object (like `lodash/get` with different syntax).
 
@@ -105,7 +85,9 @@ get(["a", 1])(obj); // "yep"
 get(["a", "b", "c"], "nothing")(obj); // "nothing"
 ```
 
-### match(_**...patterns**: [predicate: function, map: function][]_): (value: any) => any
+### match
+
+match(_**...patterns**: [predicate: function, map: function][]_): (value: any) => any
 
 Inspired by (but not the same as) [pattern matching](https://stackoverflow.com/questions/2502354/what-is-pattern-matching-in-functional-languages) from other functional languages.
 
@@ -129,7 +111,9 @@ matcher(2); // "2 is even!"
 matcher("a"); // "No match"
 ```
 
-### Pipe(_**...funcs**: function[]_): function
+### Pipe
+
+Pipe(_**...funcs**: function[]_): function
 
 Performs left-to-right function composition. Mostly like Ramdas [pipe](https://ramdajs.com/docs/#pipe) except all functions must be unary.
 
@@ -140,7 +124,9 @@ addTwoAndDouble(1); // 6
 [1, 2].map(addTwoAndDouble); // [6, 8]
 ```
 
-### trace(_**value**: any_): any
+### trace
+
+trace(_**value**: any_): any
 
 Accepts a single value, logs it using `console.log` and returns the value. Useful for debugging pipelines.
 
@@ -151,6 +137,32 @@ Pipe(
   multiply(2),
   trace // Logs "6" to the console
 )(1);
+```
+
+## Notable core functions
+
+### reduce
+
+reduce(_**reducer**: function, **initial**: any, **map?**: function, **filter?**: function_): (_**arr**: any[]_) => any[]
+
+Note that `reducer` needs to be a higher order unary function (returning another unary function) and that the order of the current and accumulator are reversed. This makes it possible to use other functions from this package as the `reducer`.
+
+```js
+reduce(curr => accum => accum + curr, 0)([1, 2, 3]); // 6
+reduce(add, 0)([1, 2, 3]); // 6
+reduce(concat, [])([[1], [2], [3]]);
+```
+
+`map` and `filter` can be used to do many operations that otherwise would require iterating over a list many times, like `[].map(fn).filter(fn).reduce(fn)` which can be orders of magnitude slower.
+
+```js
+const numbers = [1, 2, 3, 4];
+
+// 4 iterations
+reduce(add, 0, pow(2), isEven)(numbers); // 20
+
+// 4 + 2 + 2 iterations
+Pipe(filter(isEven), map(pow(2)), reduce(add))(numbers); // 20
 ```
 
 ## <a id='core'></a> Core functions
