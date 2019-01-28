@@ -1,3 +1,6 @@
+import { get, match, Pipe } from "./utils";
+export { get, match, Pipe };
+
 // Util
 export const exists = a => a !== undefined && a !== null;
 export const id = x => x;
@@ -5,36 +8,6 @@ export const or = fallback => v => (exists(v) ? v : fallback);
 export const no = () => false;
 export const noop = () => {};
 export const yes = () => true;
-
-const assertFn = (label, func) => {
-  if (!exists(func) || typeof func !== "function") {
-    throw new TypeError(`Non-function passed to '${label}'`);
-  }
-
-  return func;
-};
-
-export const Pipe = (...funcs) => value => funcs.reduce((a, func) => func(a), value);
-
-export const match = (...patterns) => v => {
-  if (patterns.length === 0) throw new TypeError("No patterns passed to 'match'");
-
-  patterns.forEach(([p, m], index) => {
-    assertFn(`match[${index}]`, p);
-    assertFn(`match[${index}]`, m);
-  });
-
-  const result = patterns.find(([predicate]) => predicate(v));
-  return result ? (([_, map]) => map(v))(result) : undefined;
-};
-
-// This naming makes more sense in combination with 'match'
-export const otherwise = yes;
-
-export const get = (...keys) => obj => keys.reduce((a, key) => (a || {})[key], obj);
-
-// eslint-disable-next-line no-console
-export const trace = v => console.log(v) || v;
 
 // Predicates
 export const gt = b => a => a > b;
@@ -48,8 +21,8 @@ export const lt = b => a => a < b;
 export const lte = b => a => a <= b;
 
 // TODO: test
-const isAtKey = (key, predicate) => Pipe(get(key), predicate);
-const isAtIndex = (index, predicate) => isAtKey(index, predicate);
+export const isAtKey = (key, predicate) => v => predicate(get(key)(v));
+export const isAtIndex = (index, predicate) => isAtKey(index, predicate);
 export const isAll = (...predicates) => v =>
   predicates.reduce((a, pred) => a && pred(v), true);
 export const isSome = (...predicates) => v =>
@@ -77,11 +50,6 @@ export const trim = str => sS(str).trim();
 const sA = arr => (Array.isArray(arr) ? arr : []);
 const ensureArray = a => (Array.isArray(a) ? a : exists(a) ? [a] : []);
 
-const plainReduce = (func, initial) => arr =>
-  sA(arr).reduce((a, c) => func(c)(a), initial);
-const mapFilterReduce = (reducer, initial, map, filter = yes) => arr =>
-  sA(arr).reduce((a, c) => (filter(c) ? reducer(map(c))(a) : a), initial);
-
 // Array
 export const array = (length = 0, mapper = id, filter = yes) =>
   new Array(length).fill(0).reduce((a, _, i) => a.concat(filter(i) ? mapper(i) : []), []);
@@ -97,8 +65,6 @@ export const indexOf = term => arr => sA(arr).indexOf(term);
 export const join = sep => arr => sA(arr).join(sep);
 export const length = arr => sA(arr).length;
 export const map = (...funcs) => arr => sA(arr).map(Pipe(...funcs));
-export const reduce = (reducer, initial, map, filter) =>
-  map ? mapFilterReduce(reducer, initial, map, filter) : plainReduce(reducer, initial);
 export const reverse = arr => sA(arr).reverse();
 export const slice = (begin, end) => arr => sA(arr).slice(begin, end);
 export const some = func => arr => sA(arr).some(func);
@@ -109,6 +75,14 @@ export const sortBy = (...keys) =>
     const B = get(...keys)(b);
     return lt(B)(A) ? -1 : gt(B)(A) ? 1 : 0;
   });
+
+const plainReduce = (func, initial) => arr =>
+  sA(arr).reduce((a, c) => func(c)(a), initial);
+const mapFilterReduce = (reducer, initial, map, filter = yes) => arr =>
+  sA(arr).reduce((a, c) => (filter(c) ? reducer(map(c))(a) : a), initial);
+
+export const reduce = (reducer, initial, map, filter) =>
+  map ? mapFilterReduce(reducer, initial, map, filter) : plainReduce(reducer, initial);
 
 // Number
 export const int = n => parseInt(n);
@@ -132,9 +106,9 @@ export const sum = reduce(add, 0);
 
 // Object
 export const assign = b => a => Object.assign({}, a, b);
-export const has = (...keys) => Pipe(get(...keys), exists);
+export const has = (...keys) => obj => exists(get(...keys)(obj));
 export const objectFromEntry = ([k, v]) => ({ [k]: v });
 // TODO: test:
 export const mapEntry = (mapKey, mapValue) => ([k, v]) => [mapKey(k), mapValue(v)];
-export const mapObject = (map, filter) =>
-  Pipe(Object.entries, reduce(assign, {}, Pipe(map, objectFromEntry), filter));
+export const mapObject = (map, filter) => obj =>
+  reduce(assign, {}, Pipe(map, objectFromEntry), filter)(Object.entries(obj));
