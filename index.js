@@ -69,10 +69,10 @@ export const reverse = arr => sA(arr).reverse();
 export const slice = (begin, end) => arr => sA(arr).slice(begin, end);
 export const some = func => arr => sA(arr).some(func);
 export const sort = func => arr => sA(arr).sort(func);
-export const sortBy = (...keys) =>
+export const sortBy = (keys = []) =>
   sort((a, b) => {
-    const A = get(...keys)(a);
-    const B = get(...keys)(b);
+    const A = get(keys)(a);
+    const B = get(keys)(b);
     return lt(B)(A) ? -1 : gt(B)(A) ? 1 : 0;
   });
 
@@ -106,7 +106,7 @@ export const sum = reduce(add, 0);
 
 // Object
 export const assign = b => a => Object.assign({}, a, b);
-export const has = (...keys) => obj => exists(get(...keys)(obj));
+export const has = (keys = []) => obj => exists(get(keys)(obj));
 export const objectFromEntry = ([k, v]) => ({ [k]: v });
 // TODO: test:
 export const mapEntry = (mapKey, mapValue) => ([k, v]) => [mapKey(k), mapValue(v)];

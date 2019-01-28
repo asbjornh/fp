@@ -1,6 +1,10 @@
 export const Pipe = (...funcs) => value => funcs.reduce((a, func) => func(a), value);
 
-export const get = (...keys) => obj => keys.reduce((a, key) => (a || {})[key], obj);
+export const get = (keys, defaultValue) => obj => {
+  const result = [].concat(keys).reduce((a, key) => (a || {})[key], obj);
+
+  return result !== undefined && result !== null ? result : defaultValue;
+};
 
 // eslint-disable-next-line no-console
 export const trace = v => console.log(v) || v;
