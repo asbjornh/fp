@@ -170,19 +170,17 @@ export const yes = () => true;
 // Predicates
 export const gt = b => a => a > b;
 export const gte = b => a => a >= b;
+export const lt = b => a => a < b;
+export const lte = b => a => a <= b;
 export const is = a => b => a === b;
 export const isNumber = n => typeof n === "number";
 export const isString = n => typeof n === "string";
 export const isEven = n => isNumber(n) && n % 2 === 0;
 export const isOdd = n => isNumber(n) && n % 2 !== 0;
-export const lt = b => a => a < b;
-export const lte = b => a => a <= b;
-
-// TODO: test
 export const isAtKey = (key, predicate) => v => predicate(get(key)(v));
 export const isAtIndex = (index, predicate) => isAtKey(index, predicate);
 export const isAll = (...predicates) => v =>
-  predicates.reduce((a, pred) => a && pred(v), true);
+  predicates.reduce((a, pred) => a && pred(v), predicates.length ? true : false);
 export const isSome = (...predicates) => v =>
   predicates.reduce((a, pred) => a || pred(v), false);
 
@@ -257,18 +255,15 @@ export const max = arr => Math.max(...arr);
 export const min = arr => Math.min(...arr);
 export const clamp = (min, max) => n => Math.min(max, Math.max(min, n));
 export const pow = exp => base => Math.pow(base, exp);
-export const random = (a = 1) => () => a * Math.random();
 export const rangeMap = (inMin, inMax, outMin, outMax) => n =>
   ((n - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-export const sum = reduce(add, 0);
 
 // Object
 export const assign = b => a => Object.assign({}, a, b);
 export const has = (keys = []) => obj => exists(get(keys)(obj));
-export const objectFromEntry = ([k, v]) => ({ [k]: v });
-// TODO: test:
-export const mapEntry = (mapKey, mapValue) => ([k, v]) => [mapKey(k), mapValue(v)];
-export const mapObject = (map, filter) => obj =>
+export const objectFromEntry = ([k, v] = []) => (exists(k) ? { [k]: v } : {});
+export const mapEntry = (mapKey, mapValue) => ([k, v] = []) => [mapKey(k), mapValue(v)];
+export const mapObject = (map, filter) => (obj = {}) =>
   reduce(assign, {}, Pipe(map, objectFromEntry), filter)(Object.entries(obj));
 
 ```
