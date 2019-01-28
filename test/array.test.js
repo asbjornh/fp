@@ -1,7 +1,7 @@
 import test from "ava";
 
 // NOTE: Used for more readable tests
-import { is, isEven, multiply, pow } from "../index";
+import { add, is, isEven, multiply, pow } from "../index";
 
 import {
   array,
@@ -57,6 +57,7 @@ test("map", macro, [0, 2, 4], map(multiply(2))([0, 1, 2]));
 test("map: empty", macro, [], map(multiply(2))());
 test("reduce", macro, 3, reduce(c => a => a + c, 0)([0, 1, 2]));
 test("reduce: empty", macro, 0, reduce(c => a => a + c, 0)());
+test("reduce: map + filter", macro, 4, reduce(add, 0, multiply(2), isEven)([1, 2, 3]));
 test("reverse", macro, [3, 2, 1], reverse([1, 2, 3]));
 test("reverse: empty", macro, [], reverse());
 test("slice", macro, [1, 2], slice(1, 3)([0, 1, 2]));
