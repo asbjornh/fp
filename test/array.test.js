@@ -69,11 +69,11 @@ test("sort: empty", macro, [], sort()());
 test(
   "sortBy",
   macro,
-  [{ a: 0 }, { a: 1 }, { a: 2 }],
-  sortBy("a")([{ a: 2 }, { a: 0 }, { a: 1 }])
+  [{ a: { b: 0 } }, { a: { b: 1 } }, { a: { b: 2 } }],
+  sortBy("a", "b")([{ a: { b: 2 } }, { a: { b: 0 } }, { a: { b: 1 } }])
 );
 test(
-  "sortBy: numeric keys",
+  "sortBy: index keys",
   macro,
   [["a", 0], ["a", 1], ["a", 2]],
   sortBy(1)([["a", 2], ["a", 0], ["a", 1]])

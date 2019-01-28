@@ -31,6 +31,8 @@ export const match = (...patterns) => v => {
 // This naming makes more sense in combination with 'match'
 export const otherwise = yes;
 
+export const get = (...keys) => obj => keys.reduce((a, key) => (a || {})[key], obj);
+
 // eslint-disable-next-line no-console
 export const trace = v => console.log(v) || v;
 
@@ -44,6 +46,14 @@ export const isEven = n => isNumber(n) && n % 2 === 0;
 export const isOdd = n => isNumber(n) && n % 2 !== 0;
 export const lt = b => a => a < b;
 export const lte = b => a => a <= b;
+
+// TODO: test
+const isAtKey = (key, predicate) => Pipe(get(key), predicate);
+const isAtIndex = (index, predicate) => isAtKey(index, predicate);
+export const isAll = (...predicates) => v =>
+  predicates.reduce((a, pred) => a && pred(v), true);
+export const isSome = (...predicates) => v =>
+  predicates.reduce((a, pred) => a || pred(v), false);
 
 // safeString
 const sS = str => (exists(str) && typeof str === "string" ? str : "");
@@ -93,18 +103,12 @@ export const reverse = arr => sA(arr).reverse();
 export const slice = (begin, end) => arr => sA(arr).slice(begin, end);
 export const some = func => arr => sA(arr).some(func);
 export const sort = func => arr => sA(arr).sort(func);
-export const sortBy = key =>
+export const sortBy = (...keys) =>
   sort((a, b) => {
-    const A = (a || {})[key];
-    const B = (b || {})[key];
+    const A = get(...keys)(a);
+    const B = get(...keys)(b);
     return lt(B)(A) ? -1 : gt(B)(A) ? 1 : 0;
   });
-
-// TODO: tests
-export const isAll = (...predicates) => value =>
-  reduce(pred => a => a && pred(value), true)(predicates);
-export const isSome = (...predicates) => value =>
-  reduce(pred => a => a || pred(value), false)(predicates);
 
 // Number
 export const int = n => parseInt(n);
@@ -128,13 +132,9 @@ export const sum = reduce(add, 0);
 
 // Object
 export const assign = b => a => Object.assign({}, a, b);
-export const get = (...keys) => obj => reduce(key => a => (a || {})[key], obj)(keys);
 export const has = (...keys) => Pipe(get(...keys), exists);
 export const objectFromEntry = ([k, v]) => ({ [k]: v });
 // TODO: test:
-export const mapEntry = (...mapKey) => (...mapValue) => ([k, v]) => [
-  Pipe(...mapKey)(k),
-  Pipe(...mapValue)(v)
-];
+export const mapEntry = (mapKey, mapValue) => ([k, v]) => [mapKey(k), mapValue(v)];
 export const mapObject = (map, filter) =>
   Pipe(Object.entries, reduce(assign, {}, Pipe(map, objectFromEntry), filter));
