@@ -28,7 +28,6 @@ const sS = str => (exists(str) && typeof str === "string" ? str : "");
 export const charCodeAt = index => str => sS(str).charCodeAt(index);
 export const endsWith = term => str => sS(str).endsWith(term);
 export const fromCharCode = num => String.fromCharCode(num);
-export const match = regexp => str => sS(str).match(regexp);
 export const padEnd = (length, char) => str => sS(str).padEnd(length, char);
 export const padStart = (length, char) => str => sS(str).padStart(length, char);
 export const repeat = length => str => sS(str).repeat(length);
