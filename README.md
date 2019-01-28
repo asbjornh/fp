@@ -65,9 +65,9 @@ In both cases, the output is `[0, 4, 16]`
 Inspired by (but not the same as) [pattern matching](https://stackoverflow.com/questions/2502354/what-is-pattern-matching-in-functional-languages) from other functional languages.
 
 ```js
-const matcher = match([isEven, () => "Is even!"], [isOdd, () => "Is odd!"]);
-matcher(1); // "Is odd!"
-matcher(2); // "Is even!"
+const matcher = match([isEven, v => `${v} is even!`], [isOdd, v => `${v} is odd!`]);
+matcher(1); // "1 is odd!"
+matcher(2); // "2 is even!"
 matcher("a"); // undefined
 ```
 

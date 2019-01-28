@@ -6,9 +6,9 @@ export const no = () => false;
 export const noop = () => {};
 export const yes = () => true;
 
-const assertFn = (callerName, func) => {
+const assertFn = (label, func) => {
   if (!exists(func) || typeof func !== "function") {
-    throw new TypeError(`Non-function passed to '${callerName}'`);
+    throw new TypeError(`Non-function passed to '${label}'`);
   }
 
   return func;
@@ -16,7 +16,6 @@ const assertFn = (callerName, func) => {
 
 export const Pipe = (...funcs) => value => funcs.reduce((a, func) => func(a), value);
 
-// TODO: test
 export const match = (...patterns) => v => {
   if (patterns.length === 0) throw new TypeError("No patterns passed to 'match'");
 
@@ -126,11 +125,6 @@ export const random = (a = 1) => () => a * Math.random();
 export const rangeMap = (inMin, inMax, outMin, outMax) => n =>
   ((n - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 export const sum = reduce(add, 0);
-
-export const radians = deg => (deg * Math.PI) / 180;
-export const cos = deg => Math.cos(radians(deg));
-export const sin = deg => Math.sin(radians(deg));
-export const tan = deg => Math.tan(radians(deg));
 
 // Object
 export const assign = b => a => Object.assign({}, a, b);
