@@ -9,6 +9,10 @@
     "pipe"
   ],
   "main": "index.js",
+  "files": [
+    "lib",
+    "es6"
+  ],
   "scripts": {
     "build": "babel source --out-dir lib",
     "docs": "node codegen/generate-readme.js",
