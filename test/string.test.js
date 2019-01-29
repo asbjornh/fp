@@ -14,7 +14,7 @@ import {
   toLowerCase,
   toUpperCase,
   trim
-} from "../index";
+} from "../source/index";
 
 const macro = (t, expected, input) => {
   t.deepEqual(expected, input);

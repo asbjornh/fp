@@ -10,7 +10,7 @@ import {
   clamp,
   pow,
   rangeMap
-} from "../index";
+} from "../source/index";
 
 const macro = (t, expected, input) => {
   t.is(expected, input);

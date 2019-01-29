@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { isEven, isOdd, isString, match } from "../index";
+import { isEven, isOdd, isString, match } from "../source/index";
 
 test("Happy path", t => {
   const matcher = match(

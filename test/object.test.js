@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { assign, has, mapEntry, mapObject, objectFromEntry } from "../index";
+import { assign, has, mapEntry, mapObject, objectFromEntry } from "../source/index";
 
 test("assign", t => {
   const a = { a: 1, b: 2 };

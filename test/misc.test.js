@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { exists, id, no, noop, or, yes } from "../index";
+import { exists, id, no, noop, or, yes } from "../source/index";
 
 const macro = (t, expected, input) => {
   t.deepEqual(expected, input);

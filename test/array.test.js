@@ -1,7 +1,7 @@
 import test from "ava";
 
 // NOTE: Used for more readable tests
-import { add, is, isEven, multiply, pow } from "../index";
+import { add, is, isEven, multiply, pow } from "../source/index";
 
 import {
   array,
@@ -23,7 +23,7 @@ import {
   some,
   sort,
   sortBy
-} from "../index";
+} from "../source/index";
 
 const macro = (t, expected, input) => {
   t.deepEqual(expected, input);

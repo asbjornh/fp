@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { get } from "../index";
+import { get } from "../source/index";
 
 test("Single path", t => {
   const a = { a: 1 };

@@ -14,7 +14,7 @@ import {
   isString,
   lt,
   lte
-} from "../index";
+} from "../source/index";
 
 test("gt", t => {
   t.is(true, gt(2)(3));

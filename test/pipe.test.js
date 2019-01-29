@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { charCodeAt, join, map, Pipe, subtract } from "../index";
+import { charCodeAt, join, map, Pipe, subtract } from "../source/index";
 
 test("Pipe", t => {
   const myMap = Pipe(charCodeAt(0), subtract(65));

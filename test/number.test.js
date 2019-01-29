@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { int, float, toFixed } from "../index";
+import { int, float, toFixed } from "../source/index";
 
 const macro = (t, expected, input) => {
   t.is(expected, input);

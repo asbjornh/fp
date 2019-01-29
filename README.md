@@ -19,6 +19,10 @@ import * as K from "kompis";
 K.Pipe(K.map(K.add(10)));
 ```
 
+## ES6
+
+ES6 source can be imported from `kompis/es6` (it's about a third of the size of the regular ES5 version).
+
 ## About
 
 The functions can be divided in two groups: core functions and utils. The utils are properly documented below. The core functions are all pretty small so their implementations are included (without further documentation) [at the bottom](#core) of this readme.
