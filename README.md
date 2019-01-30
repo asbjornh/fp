@@ -102,6 +102,20 @@ matcher(2); // "2 is even!"
 matcher("a"); // undefined
 ```
 
+#### Recursion
+
+If you use `match` recursively you'll get a maximum call stack exceeded error. To avoid this, execute `match` with a value explicitly if you need recursion:
+
+```js
+// This will always create a maximum call stack exceeded error
+const badMatch = match([somePredicate, badMatch], [otherwise, n => n]);
+
+// This won't
+const goodMatch = value => match([somePredicate, goodMatch], [otherwise, n => n])(value);
+```
+
+#### Fallback value
+
 If you need a fallback pattern, you can use the `otherwise` function in the _**last**_ pattern (`otherwise` always returns `true`).
 
 ```js
@@ -172,8 +186,8 @@ Pipe(filter(isEven), map(pow(2)), reduce(add))(numbers); // 20
 ## <a id='core'></a> Core functions
 
 ```js
-import { get, match, Pipe } from "./utils";
-export { get, match, Pipe };
+import { get, match, otherwise, Pipe, trace } from "./utils";
+export { get, match, otherwise, Pipe, trace };
 
 // Misc
 export const exists = a => a !== undefined && a !== null;
