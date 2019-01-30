@@ -16,9 +16,9 @@ test("has", t => {
   const a = { a: { b: 0, c: false } };
 
   t.is(true, has("a")(a));
-  t.is(true, has(["a", "b"])(a));
-  t.is(true, has(["a", "c"])(a));
-  t.is(false, has(["a", "x"])(a));
+  t.is(true, has("a.b")(a));
+  t.is(true, has("a.c")(a));
+  t.is(false, has("a.x")(a));
   t.is(false, has()());
 });
 

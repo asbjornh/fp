@@ -1,28 +1,36 @@
 export const Pipe = (...funcs) => value => funcs.reduce((a, func) => func(a), value);
 
-export const get = (keys, defaultValue) => obj => {
-  const result = [].concat(keys).reduce((a, key) => (a || {})[key], obj);
+const assertType = (type, label) => value => {
+  if (typeof value !== type) {
+    throw new TypeError(label);
+  }
 
-  return result !== undefined && result !== null ? result : defaultValue;
+  return value;
+};
+
+const assertString = assertType("string", "get: path argument must be a string");
+// eslint-disable-next-line no-unused-vars
+export const get = (path, defaultValue) => obj => {
+  assertString(path);
+  const sep = path.startsWith("[") || path === "" ? "" : ".";
+  try {
+    return eval(`obj${sep}${path}`);
+  } catch {
+    return defaultValue;
+  }
 };
 
 // eslint-disable-next-line no-console
 export const trace = v => console.log(v) || v;
 
-const assertFn = (label, func) => {
-  if (typeof func !== "function") {
-    throw new TypeError(`Non-function passed to '${label}'`);
-  }
-
-  return func;
-};
+const matchError = index => `Non-function passed to 'match[${index}]'`;
 
 export const match = (...patterns) => v => {
   if (patterns.length === 0) throw new TypeError("No patterns passed to 'match'");
 
   patterns.forEach(([p, m], index) => {
-    assertFn(`match[${index}]`, p);
-    assertFn(`match[${index}]`, m);
+    assertType("function", matchError(index))(p);
+    assertType("function", matchError(index))(m);
   });
 
   const result = patterns.find(([predicate]) => predicate(v));

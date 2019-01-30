@@ -71,13 +71,13 @@ test(
   "sortBy",
   macro,
   [{ a: { b: 0 } }, { a: { b: 1 } }, { a: { b: 2 } }],
-  sortBy(["a", "b"])([{ a: { b: 2 } }, { a: { b: 0 } }, { a: { b: 1 } }])
+  sortBy("a.b")([{ a: { b: 2 } }, { a: { b: 0 } }, { a: { b: 1 } }])
 );
 test(
   "sortBy: index keys",
   macro,
   [["a", 0], ["a", 1], ["a", 2]],
-  sortBy(1)([["a", 2], ["a", 0], ["a", 1]])
+  sortBy("[1]")([["a", 2], ["a", 0], ["a", 1]])
 );
 test("sortBy: empty", macro, [], sortBy("a")());
 test("sortBy: non-object elements", macro, [2, 1], sortBy("a")([2, 1]));

@@ -78,15 +78,15 @@ In both cases, the output is `[0, 4, 16]`
 
 ### get
 
-get(_**keys**: string | number | (string | number)[], **default**: any_): (obj: object | array) => any
+get(_**path**: string, **default**: any_): (obj: object | array) => any
 
-Safely get children properties of an object (like `lodash/get` with different syntax).
+Safely get children properties of an object (like `lodash/get` but with the object last).
 
 ```js
 const obj = { a: ["nope", "yep"] };
 get("a")(obj); // ["nope", "yep"]
-get(["a", 1])(obj); // "yep"
-get(["a", "b", "c"], "nothing")(obj); // "nothing"
+get("a[1]")(obj); // "yep"
+get("a.b.c", {})(obj); // {}
 ```
 
 ### match
@@ -207,8 +207,8 @@ export const isNumber = n => typeof n === "number";
 export const isString = n => typeof n === "string";
 export const isEven = n => isNumber(n) && n % 2 === 0;
 export const isOdd = n => isNumber(n) && n % 2 !== 0;
-export const isAtKey = (key, predicate) => v => predicate(get(key)(v));
-export const isAtIndex = (index, predicate) => isAtKey(index, predicate);
+export const isAtPath = (path, predicate) => v => predicate(get(path)(v));
+export const isAtIndex = (index, predicate) => isAtPath(`[${index}]`, predicate);
 export const isAll = (...predicates) => v =>
   predicates.reduce((a, pred) => a && pred(v), predicates.length ? true : false);
 export const isSome = (...predicates) => v =>
@@ -255,7 +255,7 @@ export const reverse = arr => sA(arr).reverse();
 export const slice = (begin, end) => arr => sA(arr).slice(begin, end);
 export const some = func => arr => sA(arr).some(func);
 export const sort = func => arr => sA(arr).sort(func);
-export const sortBy = (keys = []) =>
+export const sortBy = (keys = "") =>
   sort((a, b) => {
     const A = get(keys)(a);
     const B = get(keys)(b);
@@ -290,7 +290,7 @@ export const rangeMap = (inMin, inMax, outMin, outMax) => n =>
 
 // Object
 export const assign = b => a => Object.assign({}, a, b);
-export const has = (keys = []) => obj => exists(get(keys)(obj));
+export const has = (keys = "") => obj => exists(get(keys)(obj));
 export const objectFromEntry = ([k, v] = []) => (exists(k) ? { [k]: v } : {});
 export const mapEntry = (mapKey, mapValue) => ([k, v] = []) => [mapKey(k), mapValue(v)];
 export const mapObject = (map, filter) => (obj = {}) =>

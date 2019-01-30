@@ -78,15 +78,15 @@ In both cases, the output is `[0, 4, 16]`
 
 ### get
 
-get(_**keys**: string | number | (string | number)[], **default**: any_): (obj: object | array) => any
+get(_**path**: string, **default**: any_): (obj: object | array) => any
 
-Safely get children properties of an object (like `lodash/get` with different syntax).
+Safely get children properties of an object (like `lodash/get` but with the object last).
 
 ```js
 const obj = { a: ["nope", "yep"] };
 get("a")(obj); // ["nope", "yep"]
-get(["a", 1])(obj); // "yep"
-get(["a", "b", "c"], "nothing")(obj); // "nothing"
+get("a[1]")(obj); // "yep"
+get("a.b.c", {})(obj); // {}
 ```
 
 ### match
