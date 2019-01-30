@@ -1,6 +1,6 @@
 {
   "name": "kompis",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A collection of plain and higher order functions for doing composition stuff in javascript.",
   "keywords": [
     "composition",
@@ -8,7 +8,7 @@
     "functional programming",
     "pipe"
   ],
-  "main": "index.js",
+  "main": "lib/index.js",
   "files": [
     "lib",
     "es6"
