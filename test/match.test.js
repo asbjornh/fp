@@ -1,6 +1,6 @@
 import test from "ava";
 
-import { isEven, isOdd, isString, match } from "../source/index";
+import { isEven, isOdd, isString, otherwise, match } from "../source/index";
 
 test("Happy path", t => {
   const matcher = match(
@@ -19,7 +19,7 @@ test("With fallback", t => {
   const matcher = match(
     [isEven, () => true],
     [isOdd, () => false],
-    [() => true, () => "No match"]
+    [otherwise, () => "No match"]
   );
 
   t.is(true, matcher(2));

@@ -1,5 +1,5 @@
-import { get, match, Pipe } from "./utils";
-export { get, match, Pipe };
+import { get, match, otherwise, Pipe } from "./utils";
+export { get, match, otherwise, Pipe };
 
 // Misc
 export const exists = a => a !== undefined && a !== null;
