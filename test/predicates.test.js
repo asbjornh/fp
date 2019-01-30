@@ -5,8 +5,8 @@ import {
   gte,
   is,
   isAll,
-  isAtKey,
   isAtIndex,
+  isAtPath,
   isEven,
   isNumber,
   isOdd,
@@ -77,11 +77,12 @@ test("isAtIndex", t => {
   t.is(false, isAtIndex(10, isEven)(arr));
 });
 
-test("isAtKey", t => {
-  const obj = { a: 2, b: 3 };
-  t.is(true, isAtKey("a", isEven)(obj));
-  t.is(false, isAtKey("b", isEven)(obj));
-  t.is(false, isAtKey("x", isEven)(obj));
+test("isAtPath", t => {
+  const obj = { a: 2, b: 3, c: { d: 4 } };
+  t.is(true, isAtPath("a", isEven)(obj));
+  t.is(true, isAtPath("c.d", is(4))(obj));
+  t.is(false, isAtPath("b", isEven)(obj));
+  t.is(false, isAtPath("x", isEven)(obj));
 });
 
 test("isAll", t => {
