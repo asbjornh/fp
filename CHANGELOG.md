@@ -1,3 +1,7 @@
+# 0.3.1
+
+- Adds `mapIf`
+
 # 0.3.0
 
 - Adds `label` to `trace`

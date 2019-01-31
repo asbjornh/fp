@@ -1,6 +1,6 @@
 {
   "name": "kompis",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A collection of plain and higher order functions for doing composition stuff in javascript.",
   "keywords": [
     "composition",

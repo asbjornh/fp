@@ -1,6 +1,8 @@
 import test from "ava";
 
-import { exists, id, no, noop, or, yes } from "../source/index";
+import { isEven, isOdd } from "../source/index";
+
+import { exists, id, mapIf, no, noop, or, yes } from "../source/index";
 
 const macro = (t, expected, input) => {
   t.deepEqual(expected, input);
@@ -17,6 +19,12 @@ test("exists", t => {
 test("id", t => {
   t.is(1, id(1));
   t.is(undefined, id());
+});
+
+test("mapIf", t => {
+  t.is("1", mapIf(isEven, n => n * 10, String)(1));
+  t.is(1, mapIf(isEven, n => n * 10)(1)); // Defaults to id
+  t.is(10, mapIf(isOdd, n => n * 10, String)(1));
 });
 
 test("or", t => {

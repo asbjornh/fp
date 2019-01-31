@@ -9,6 +9,9 @@ export const no = () => false;
 export const noop = () => {};
 export const yes = () => true;
 
+export const mapIf = (predicate = yes, ifFunc = id, elseFunc = id) => v =>
+  predicate(v) ? ifFunc(v) : elseFunc(v);
+
 // Predicates
 export const gt = b => a => a > b;
 export const gte = b => a => a >= b;
