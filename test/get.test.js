@@ -11,6 +11,7 @@ test("Single path", t => {
   t.is(2, get("[1]")(b));
   t.is(2, get("[1]")(get("[0]")(c)));
   t.is(undefined, get("a")());
+  t.is("b", get("a", "b")());
   t.deepEqual({}, get("a.b.c", {})());
 });
 

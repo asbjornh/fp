@@ -1,20 +1,18 @@
 export const Pipe = (...funcs) => value => funcs.reduce((a, func) => func(a), value);
 
-const assertType = (type, label) => value => {
-  if (typeof value !== type) {
-    throw new TypeError(label);
-  }
-
-  return value;
+const throwError = error => {
+  throw error;
 };
+const assertType = (type, label) => value =>
+  typeof value !== type ? throwError(new TypeError(label)) : value;
 
-const assertString = assertType("string", "get: path argument must be a string");
+const assertString = assertType("string", "path must be a string");
 // eslint-disable-next-line no-unused-vars
 export const get = (path, defaultValue) => obj => {
-  assertString(path);
-  const sep = path.startsWith("[") || path === "" ? "" : ".";
+  const sep = assertString(path).startsWith("[") || path === "" ? "" : ".";
   try {
-    return eval(`obj${sep}${path}`);
+    const result = eval(`obj${sep}${path}`);
+    return result === undefined ? defaultValue : result;
   } catch {
     return defaultValue;
   }
