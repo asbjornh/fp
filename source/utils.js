@@ -21,7 +21,7 @@ export const get = (path, defaultValue) => obj => {
 };
 
 // eslint-disable-next-line no-console
-export const trace = v => console.log(v) || v;
+export const trace = (label = "") => v => console.log(label, v) || v;
 
 const matchError = index => `Non-function passed to 'match[${index}]'`;
 

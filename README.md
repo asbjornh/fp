@@ -144,16 +144,16 @@ addTwoAndDouble(1); // 6
 
 ### trace
 
-trace(_**value**: any_): any
+trace(_**label**: string): (_**value**: any\_) => any
 
-Accepts a single value, logs it using `console.log` and returns the value. Useful for debugging pipelines.
+Accepts a label and then a single value, logs it using `console.log` and returns the value. Useful for debugging pipelines.
 
 ```js
 Pipe(
   add(2),
-  trace, // logs "3" to the console
+  trace(), // logs "3" to the console
   multiply(2),
-  trace // Logs "6" to the console
+  trace("final:") // Logs "final: 6" to the console
 )(1);
 ```
 
@@ -255,10 +255,10 @@ export const reverse = arr => sA(arr).reverse();
 export const slice = (begin, end) => arr => sA(arr).slice(begin, end);
 export const some = func => arr => sA(arr).some(func);
 export const sort = func => arr => sA(arr).sort(func);
-export const sortBy = (keys = "") =>
+export const sortBy = (path = "") =>
   sort((a, b) => {
-    const A = get(keys)(a);
-    const B = get(keys)(b);
+    const A = get(path)(a);
+    const B = get(path)(b);
     return lt(B)(A) ? -1 : gt(B)(A) ? 1 : 0;
   });
 
@@ -290,7 +290,7 @@ export const rangeMap = (inMin, inMax, outMin, outMax) => n =>
 
 // Object
 export const assign = b => a => Object.assign({}, a, b);
-export const has = (keys = "") => obj => exists(get(keys)(obj));
+export const has = (path = "") => obj => exists(get(path)(obj));
 export const objectFromEntry = ([k, v] = []) => (exists(k) ? { [k]: v } : {});
 export const mapEntry = (mapKey, mapValue) => ([k, v] = []) => [mapKey(k), mapValue(v)];
 export const mapObject = (map, filter) => (obj = {}) =>

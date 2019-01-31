@@ -144,16 +144,16 @@ addTwoAndDouble(1); // 6
 
 ### trace
 
-trace(_**value**: any_): any
+trace(_**label**: string): (_**value**: any\_) => any
 
-Accepts a single value, logs it using `console.log` and returns the value. Useful for debugging pipelines.
+Accepts a label and then a single value, logs it using `console.log` and returns the value. Useful for debugging pipelines.
 
 ```js
 Pipe(
   add(2),
-  trace, // logs "3" to the console
+  trace(), // logs "3" to the console
   multiply(2),
-  trace // Logs "6" to the console
+  trace("final:") // Logs "final: 6" to the console
 )(1);
 ```
 
