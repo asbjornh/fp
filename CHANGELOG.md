@@ -1,3 +1,7 @@
+# 0.3.2
+
+- Adds `repository` in `package.json`
+
 # 0.3.1
 
 - Adds `mapIf`
