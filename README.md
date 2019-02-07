@@ -129,6 +129,18 @@ matcher(2); // "2 is even!"
 matcher("a"); // "No match"
 ```
 
+### not
+
+not(_**predicate**: function_): (_**...args**: any[]_) => boolean
+
+For a partially applied predicate (or a non-higher-order predicate), returns the inverse of the predicate result. Handy for avoiding arrow functions when negating predicates.
+
+```js
+const isNotString = not(isString);
+isString("hello"); // true
+isNotString("hello"); // false
+```
+
 ### Pipe
 
 Pipe(_**...funcs**: function[]_): function
@@ -186,8 +198,8 @@ Pipe(filter(isEven), map(pow(2)), reduce(add))(numbers); // 20
 ## <a id='core'></a> Core functions
 
 ```js
-import { get, match, otherwise, Pipe, trace } from "./utils";
-export { get, match, otherwise, Pipe, trace };
+import { get, match, not, otherwise, Pipe, trace } from "./utils";
+export { get, match, not, otherwise, Pipe, trace };
 
 // Misc
 export const exists = a => a !== undefined && a !== null;

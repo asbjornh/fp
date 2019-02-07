@@ -1,5 +1,7 @@
 export const Pipe = (...funcs) => value => funcs.reduce((a, func) => func(a), value);
 
+export const not = predicate => (...args) => !predicate(...args);
+
 const throwError = error => {
   throw error;
 };

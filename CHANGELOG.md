@@ -1,3 +1,7 @@
+# 0.3.3
+
+- Adds `not`
+
 # 0.3.2
 
 - Adds `repository` in `package.json`
