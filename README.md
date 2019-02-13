@@ -209,7 +209,7 @@ export const no = () => false;
 export const noop = () => {};
 export const yes = () => true;
 
-export const mapIf = (predicate = yes, ifFunc = id, elseFunc = id) => v =>
+export const mapIf = (predicate, ifFunc = id, elseFunc = id) => v =>
   predicate(v) ? ifFunc(v) : elseFunc(v);
 
 // Predicates
@@ -252,7 +252,7 @@ const sA = arr => (Array.isArray(arr) ? arr : []);
 const ensureArray = a => (Array.isArray(a) ? a : exists(a) ? [a] : []);
 
 // Array
-export const array = (length = 0, mapper = id, filter = yes) =>
+export const array = (length = 0, mapper = id, filter = v => true) =>
   new Array(length).fill(0).reduce((a, _, i) => a.concat(filter(i) ? mapper(i) : []), []);
 export const concat = b => a => ensureArray(a).concat(ensureArray(b)); // Doesn't concat undefined/null
 export const concatRight = a => b => ensureArray(a).concat(ensureArray(b)); // Doesn't concat undefined/null
@@ -279,7 +279,7 @@ export const sortBy = (path = "") =>
 
 const plainReduce = (func, initial) => arr =>
   sA(arr).reduce((a, c) => func(c)(a), initial);
-const mapFilterReduce = (reducer, initial, map, filter = yes) => arr =>
+const mapFilterReduce = (reducer, initial, map, filter = v => true) => arr =>
   sA(arr).reduce((a, c) => (filter(c) ? reducer(map(c))(a) : a), initial);
 
 export const reduce = (reducer, initial, map, filter) =>
@@ -306,8 +306,12 @@ export const rangeMap = (inMin, inMax, outMin, outMax) => n =>
 // Object
 export const assign = b => a => Object.assign({}, a, b);
 export const has = (path = "") => obj => exists(get(path)(obj));
-export const objectFromEntry = ([k, v] = []) => (exists(k) ? { [k]: v } : {});
-export const mapEntry = (mapKey, mapValue) => ([k, v] = []) => [mapKey(k), mapValue(v)];
+type Entry = [any?, any?];
+export const objectFromEntry = ([k, v]: Entry = []) => (exists(k) ? { [k]: v } : {});
+export const mapEntry = (mapKey, mapValue) => ([k, v]: Entry = []) => [
+  mapKey(k),
+  mapValue(v)
+];
 export const mapObject = (map, filter) => (obj = {}) =>
   reduce(assign, {}, Pipe(map, objectFromEntry), filter)(Object.entries(obj));
 
