@@ -1,3 +1,7 @@
+# 0.4.0
+
+- Reimplements in typescript (non-breaking) to enhance developer experience in typescript capable editors.
+
 # 0.3.3
 
 - Adds `not`
