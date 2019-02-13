@@ -11,10 +11,14 @@
   "main": "lib/index.js",
   "files": [
     "lib",
-    "es6"
+    "es6",
+    "types"
   ],
+  "types": "types",
   "scripts": {
     "build": "babel source --out-dir lib",
+    "build:es6": "tsc --target es6 --outDir es6",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir types",
     "docs": "node codegen/generate-readme.js",
     "dev": "ava --watch",
     "test": "ava"

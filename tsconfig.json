@@ -3,8 +3,6 @@
     "lib": ["dom", "es2017"],
     "noUnusedLocals": true,
     "noUnusedParameters": false,
-    "outDir": "./lib",
-    "target": "es5",
     "strictNullChecks": true,
     "strictFunctionTypes": true
   },
