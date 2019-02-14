@@ -9,8 +9,8 @@ const assertType = (type, label) => value =>
   typeof value !== type ? throwError(new TypeError(label)) : value;
 
 const assertString = assertType("string", "path must be a string");
-// eslint-disable-next-line no-unused-vars
-export const get = (path, defaultValue) => obj => {
+
+export const get = (path, defaultValue?) => obj => {
   const sep = assertString(path).startsWith("[") || path === "" ? "" : ".";
   try {
     const result = eval(`obj${sep}${path}`);
@@ -21,7 +21,10 @@ export const get = (path, defaultValue) => obj => {
 };
 
 // eslint-disable-next-line no-console
-export const trace = (label = "") => v => console.log(label, v) || v;
+export const trace = (label = "") => v => {
+  console.log(label, v);
+  return v;
+};
 
 const matchError = index => `Non-function passed to 'match[${index}]'`;
 

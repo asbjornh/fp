@@ -1,6 +1,6 @@
 {
   "name": "kompis",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "A collection of plain and higher order functions for doing composition stuff in javascript.",
   "keywords": [
     "composition",
@@ -11,10 +11,14 @@
   "main": "lib/index.js",
   "files": [
     "lib",
-    "es6"
+    "es6",
+    "types"
   ],
+  "types": "types",
   "scripts": {
-    "build": "babel source --out-dir lib",
+    "build": "tsc --target es5 --outDir lib",
+    "build:es6": "tsc --target es6 --outDir es6",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir types",
     "docs": "node codegen/generate-readme.js",
     "dev": "ava --watch",
     "test": "ava"
@@ -26,17 +30,15 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.2.3",
-    "@babel/register": "^7.0.0",
     "ava": "^1.1.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.12.0"
+    "eslint": "^5.13.0",
+    "prettier": "^1.16.4",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.3"
   },
   "ava": {
     "require": [
-      "@babel/register"
+      "ts-node/register"
     ]
   }
 }

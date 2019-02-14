@@ -5,7 +5,7 @@ const readFile = (...pathSegments) =>
   fs.readFileSync(path.resolve(__dirname, ...pathSegments), "utf8");
 
 const readmeBase = readFile("..", "readme-base.md");
-const source = readFile("..", "source", "index.js");
+const source = readFile("..", "source", "index.ts");
 
 const readmeContent = `${readmeBase}
 \`\`\`js

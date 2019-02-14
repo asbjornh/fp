@@ -1,3 +1,5 @@
 node_modules
 yarn-error.log
 lib
+es6
+types

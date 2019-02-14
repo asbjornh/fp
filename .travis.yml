@@ -5,7 +5,10 @@ install: yarn --ignore-engines
 script:
   - yarn docs
   - yarn test
-before_deploy: yarn build
+before_deploy:
+  - yarn build
+  - yarn build:es6
+  - yarn build:types
 deploy:
   provider: npm
   email: $NPM_EMAIL
