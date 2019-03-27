@@ -16,8 +16,8 @@
   ],
   "types": "types",
   "scripts": {
-    "build": "tsc --target es5 --outDir lib",
-    "build:es6": "tsc --target es6 --outDir es6",
+    "build": "tsc --target es5 --outDir lib --removeComments",
+    "build:es6": "tsc --target es6 --outDir es6 --removeComments",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir types",
     "docs": "node codegen/generate-docs.js",
     "dev": "ava --watch",
