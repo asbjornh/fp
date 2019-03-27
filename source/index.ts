@@ -88,7 +88,8 @@ export const reduce = (reducer, initial, map, filter) =>
 // Number
 export const int = n => parseInt(n);
 export const float = n => parseFloat(n);
-export const toFixed = dec => num => (num ? num.toFixed(dec) : num);
+export const toFixed = (digits: number) => (num: number) =>
+  isNumber(num) ? num.toFixed(digits) : "";
 
 // Math
 export const add = b => a => a + b;
