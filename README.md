@@ -2,6 +2,8 @@
 
 A collection of plain and higher order functions for doing composition stuff in javascript.
 
+[Documentation](/docs)
+
 ## Usage
 
 ```
