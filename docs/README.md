@@ -77,22 +77,13 @@
 - <a href="#mapEntry">mapEntry</a>
 - <a href="#mapObject">mapObject</a>
 
-## <a id="Pipe"></a> Pipe
+## <div id="Pipe"></div> Pipe
 
 
 ```ts
 Pipe: (...funcs: any[]) => (value: any) => any
 ```
 
-<details>
-  <summary>Implementation</summary>
-  <p>
-    
-```ts
-const Pipe = (...funcs) => value => funcs.reduce((a, func) => func(a), value)
-```
-  <p>
-</details>
 
 Creates a pipeline. `funcs` are composed left to right
 
@@ -103,22 +94,25 @@ addTwoAndDouble(1); // 6
 
 ```
 
-## <a id="not"></a> not
-
-
-```ts
-not: (predicate: any) => (...args: any[]) => boolean
-```
 
 <details>
   <summary>Implementation</summary>
   <p>
     
 ```ts
-const not = predicate => (...args) => !predicate(...args)
+const Pipe = (...funcs) => value => funcs.reduce((a, func) => func(a), value)
 ```
+
   <p>
 </details>
+
+## <div id="not"></div> not
+
+
+```ts
+not: (predicate: any) => (...args: any[]) => boolean
+```
+
 
 Negates the result of a `predicate` 
 
@@ -129,12 +123,36 @@ isNotString("hello"); // false
 
 ```
 
-## <a id="get"></a> get
+
+<details>
+  <summary>Implementation</summary>
+  <p>
+    
+```ts
+const not = predicate => (...args) => !predicate(...args)
+```
+
+  <p>
+</details>
+
+## <div id="get"></div> get
 
 
 ```ts
 get: (path: string, defaultValue?: any) => (obj: any) => any
 ```
+
+
+Safely access properties of objects and arrays (like `lodash.get` ).
+
+```js
+const person = { name: { last: "a" } };
+get("name.last")(person); // "a"
+get("name.first", "b")(person); // "b"
+get("[1]")([1, 2]); // 2
+
+```
+
 
 <details>
   <summary>Implementation</summary>
@@ -151,38 +169,17 @@ const get = (path: string, defaultValue?) => obj => {
   }
 }
 ```
+
   <p>
 </details>
 
-Safely access properties of objects and arrays (like `lodash.get` ).
-
-```js
-const person = { name: { last: "a" } };
-get("name.last")(person); // "a"
-get("name.first", "b")(person); // "b"
-get("[1]")([1, 2]); // 2
-
-```
-
-## <a id="trace"></a> trace
+## <div id="trace"></div> trace
 
 
 ```ts
 trace: (label?: string) => (v: any) => any
 ```
 
-<details>
-  <summary>Implementation</summary>
-  <p>
-    
-```ts
-const trace = (label = "") => v => {
-  console.log(label, v);
-  return v;
-}
-```
-  <p>
-</details>
 
 Logs `v` to the console and returns `v` .
 
@@ -196,12 +193,56 @@ Pipe(
 
 ```
 
-## <a id="match"></a> match
+
+<details>
+  <summary>Implementation</summary>
+  <p>
+    
+```ts
+const trace = (label = "") => v => {
+  console.log(label, v);
+  return v;
+}
+```
+
+  <p>
+</details>
+
+## <div id="match"></div> match
 
 
 ```ts
 match: (...patterns: [(v: any) => boolean, (v: any) => any][]) => (x: any) => any
 ```
+
+
+Takes any number of pairs of [predicate, mapper]. When a match is found for `x` , returns the result of the associated mapper applied to `x` . `otherwise` can be used as a fallback pattern (must be the last pattern).
+
+
+```js
+const matcher = match(
+  [isEven, x => `${x} is even!`],
+  [isOdd, x => `${x} is odd!`],
+  [otherwise, x => `${x} is not a number :/`]
+);
+
+matcher(1); // "1 is odd!"
+matcher(2); // "2 is even!"
+matcher("a"); // a is not a number :/
+
+```
+If you use `match` recursively you'll get a maximum call stack exceeded error. To avoid this, execute `match` with a value explicitly if you need recursion:
+
+
+```js
+// This will always create a maximum call stack exceeded error
+const badMatch = match([somePredicate, badMatch], [otherwise, n => n]);
+
+// This won't
+const goodMatch = value => match([somePredicate, goodMatch], [otherwise, n => n])(value);
+
+```
+
 
 <details>
   <summary>Implementation</summary>
@@ -220,41 +261,19 @@ const match = (...patterns: [(v: any) => boolean, (v: any) => any][]) => x => {
   return result ? (([_, map]) => map(x))(result) : undefined;
 }
 ```
+
   <p>
 </details>
 
-Takes any number of pairs of [predicate, mapper]. When a match is found for `x` , returns the result of the associated mapper applied to `x` . `otherwise` can be used as a fallback pattern (must be the last pattern).
-
-
-```js
-const matcher = match(
-  [isEven, x => `${x} is even!`],
-  [isOdd, x => `${x} is odd!`],
-  [otherwise, x => `${x} is not a number :/`]
-);
-
-matcher(1); // "1 is odd!"
-matcher(2); // "2 is even!"
-matcher("a"); // a is not a number :/
-
-```If you use `match` recursively you'll get a maximum call stack exceeded error. To avoid this, execute `match` with a value explicitly if you need recursion:
-
-
-```js
-// This will always create a maximum call stack exceeded error
-const badMatch = match([somePredicate, badMatch], [otherwise, n => n]);
-
-// This won't
-const goodMatch = value => match([somePredicate, goodMatch], [otherwise, n => n])(value);
-
-```
-
-## <a id="otherwise"></a> otherwise
+## <div id="otherwise"></div> otherwise
 
 
 ```ts
 otherwise: () => boolean
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -263,17 +282,19 @@ otherwise: () => boolean
 ```ts
 const otherwise = () => true
 ```
+
   <p>
 </details>
 
-
-
-## <a id="exists"></a> exists
+## <div id="exists"></div> exists
 
 
 ```ts
 exists: (x: any) => boolean
 ```
+
+
+Compares to `null` and `undefined` 
 
 <details>
   <summary>Implementation</summary>
@@ -282,17 +303,19 @@ exists: (x: any) => boolean
 ```ts
 const exists = x => x !== undefined && x !== null
 ```
+
   <p>
 </details>
 
-Compares to `null` and `undefined` 
-
-## <a id="id"></a> id
+## <div id="id"></div> id
 
 
 ```ts
 id: (x: any) => any
 ```
+
+
+Identity function
 
 <details>
   <summary>Implementation</summary>
@@ -301,17 +324,19 @@ id: (x: any) => any
 ```ts
 const id = x => x
 ```
+
   <p>
 </details>
 
-Identity function
-
-## <a id="or"></a> or
+## <div id="or"></div> or
 
 
 ```ts
 or: (fallback: any) => (x: any) => any
 ```
+
+
+Returns `x` if it exists. Otherwise returns `fallback` 
 
 <details>
   <summary>Implementation</summary>
@@ -320,17 +345,19 @@ or: (fallback: any) => (x: any) => any
 ```ts
 const or = fallback => x => (exists(x) ? x : fallback)
 ```
+
   <p>
 </details>
 
-Returns `x` if it exists. Otherwise returns `fallback` 
-
-## <a id="no"></a> no
+## <div id="no"></div> no
 
 
 ```ts
 no: () => boolean
 ```
+
+
+Always returns `false` 
 
 <details>
   <summary>Implementation</summary>
@@ -339,17 +366,19 @@ no: () => boolean
 ```ts
 const no = () => false
 ```
+
   <p>
 </details>
 
-Always returns `false` 
-
-## <a id="noop"></a> noop
+## <div id="noop"></div> noop
 
 
 ```ts
 noop: () => void
 ```
+
+
+Always returns `undefined` 
 
 <details>
   <summary>Implementation</summary>
@@ -358,17 +387,19 @@ noop: () => void
 ```ts
 const noop = () => {}
 ```
+
   <p>
 </details>
 
-Always returns `undefined` 
-
-## <a id="yes"></a> yes
+## <div id="yes"></div> yes
 
 
 ```ts
 yes: () => boolean
 ```
+
+
+Always returns `true` 
 
 <details>
   <summary>Implementation</summary>
@@ -377,17 +408,19 @@ yes: () => boolean
 ```ts
 const yes = () => true
 ```
+
   <p>
 </details>
 
-Always returns `true` 
-
-## <a id="mapIf"></a> mapIf
+## <div id="mapIf"></div> mapIf
 
 
 ```ts
 mapIf: (predicate: any, ifFunc?: (x: any) => any, elseFunc?: (x: any) => any) => (v: any) => any
 ```
+
+
+Runs the `ifFunc` or the `elseFunc` based on the result of `predicate(v)` 
 
 <details>
   <summary>Implementation</summary>
@@ -397,17 +430,19 @@ mapIf: (predicate: any, ifFunc?: (x: any) => any, elseFunc?: (x: any) => any) =>
 const mapIf = (predicate, ifFunc = id, elseFunc = id) => v =>
   predicate(v) ? ifFunc(v) : elseFunc(v)
 ```
+
   <p>
 </details>
 
-Runs the `ifFunc` or the `elseFunc` based on the result of `predicate(v)` 
-
-## <a id="gt"></a> gt
+## <div id="gt"></div> gt
 
 
 ```ts
 gt: (b: any) => (a: any) => boolean
 ```
+
+
+Is `a` greater than `b` ?
 
 <details>
   <summary>Implementation</summary>
@@ -416,17 +451,19 @@ gt: (b: any) => (a: any) => boolean
 ```ts
 const gt = b => a => a > b
 ```
+
   <p>
 </details>
 
-Is `a` greater than `b` ?
-
-## <a id="gte"></a> gte
+## <div id="gte"></div> gte
 
 
 ```ts
 gte: (b: any) => (a: any) => boolean
 ```
+
+
+Is `a` greater than or equal to `b` ?
 
 <details>
   <summary>Implementation</summary>
@@ -435,17 +472,19 @@ gte: (b: any) => (a: any) => boolean
 ```ts
 const gte = b => a => a >= b
 ```
+
   <p>
 </details>
 
-Is `a` greater than or equal to `b` ?
-
-## <a id="lt"></a> lt
+## <div id="lt"></div> lt
 
 
 ```ts
 lt: (b: any) => (a: any) => boolean
 ```
+
+
+Is `a` less than `b` ?
 
 <details>
   <summary>Implementation</summary>
@@ -454,17 +493,19 @@ lt: (b: any) => (a: any) => boolean
 ```ts
 const lt = b => a => a < b
 ```
+
   <p>
 </details>
 
-Is `a` less than `b` ?
-
-## <a id="lte"></a> lte
+## <div id="lte"></div> lte
 
 
 ```ts
 lte: (b: any) => (a: any) => boolean
 ```
+
+
+Is `a` less than or equal to `b` ?
 
 <details>
   <summary>Implementation</summary>
@@ -473,17 +514,19 @@ lte: (b: any) => (a: any) => boolean
 ```ts
 const lte = b => a => a <= b
 ```
+
   <p>
 </details>
 
-Is `a` less than or equal to `b` ?
-
-## <a id="is"></a> is
+## <div id="is"></div> is
 
 
 ```ts
 is: (a: any) => (b: any) => boolean
 ```
+
+
+Is `a` equal to `b` ?
 
 <details>
   <summary>Implementation</summary>
@@ -492,17 +535,19 @@ is: (a: any) => (b: any) => boolean
 ```ts
 const is = a => b => a === b
 ```
+
   <p>
 </details>
 
-Is `a` equal to `b` ?
-
-## <a id="isNumber"></a> isNumber
+## <div id="isNumber"></div> isNumber
 
 
 ```ts
 isNumber: (n: any) => boolean
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -511,17 +556,19 @@ isNumber: (n: any) => boolean
 ```ts
 const isNumber = n => typeof n === "number"
 ```
+
   <p>
 </details>
 
-
-
-## <a id="isString"></a> isString
+## <div id="isString"></div> isString
 
 
 ```ts
 isString: (n: any) => boolean
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -530,17 +577,19 @@ isString: (n: any) => boolean
 ```ts
 const isString = n => typeof n === "string"
 ```
+
   <p>
 </details>
 
-
-
-## <a id="isEven"></a> isEven
+## <div id="isEven"></div> isEven
 
 
 ```ts
 isEven: (n: any) => boolean
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -549,17 +598,19 @@ isEven: (n: any) => boolean
 ```ts
 const isEven = n => isNumber(n) && n % 2 === 0
 ```
+
   <p>
 </details>
 
-
-
-## <a id="isOdd"></a> isOdd
+## <div id="isOdd"></div> isOdd
 
 
 ```ts
 isOdd: (n: any) => boolean
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -568,17 +619,19 @@ isOdd: (n: any) => boolean
 ```ts
 const isOdd = n => isNumber(n) && n % 2 !== 0
 ```
+
   <p>
 </details>
 
-
-
-## <a id="isAtPath"></a> isAtPath
+## <div id="isAtPath"></div> isAtPath
 
 
 ```ts
 isAtPath: (path: any, predicate: any) => (v: any) => any
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -587,17 +640,19 @@ isAtPath: (path: any, predicate: any) => (v: any) => any
 ```ts
 const isAtPath = (path, predicate) => v => predicate(get(path)(v))
 ```
+
   <p>
 </details>
 
-
-
-## <a id="isAtIndex"></a> isAtIndex
+## <div id="isAtIndex"></div> isAtIndex
 
 
 ```ts
 isAtIndex: (index: any, predicate: any) => (v: any) => any
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -606,17 +661,19 @@ isAtIndex: (index: any, predicate: any) => (v: any) => any
 ```ts
 const isAtIndex = (index, predicate) => isAtPath(`[${index}]`, predicate)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="isAll"></a> isAll
+## <div id="isAll"></div> isAll
 
 
 ```ts
 isAll: (...predicates: any[]) => (v: any) => any
 ```
+
+
+Checks whether the `v` fulfils all the `predicates` 
 
 <details>
   <summary>Implementation</summary>
@@ -626,17 +683,19 @@ isAll: (...predicates: any[]) => (v: any) => any
 const isAll = (...predicates) => v =>
   predicates.reduce((a, pred) => a && pred(v), predicates.length ? true : false)
 ```
+
   <p>
 </details>
 
-Checks whether the `v` fulfils all the `predicates` 
-
-## <a id="isSome"></a> isSome
+## <div id="isSome"></div> isSome
 
 
 ```ts
 isSome: (...predicates: any[]) => (v: any) => any
 ```
+
+
+Checks whether the `v` fulfils some of the `predicates` 
 
 <details>
   <summary>Implementation</summary>
@@ -646,17 +705,19 @@ isSome: (...predicates: any[]) => (v: any) => any
 const isSome = (...predicates) => v =>
   predicates.reduce((a, pred) => a || pred(v), false)
 ```
+
   <p>
 </details>
 
-Checks whether the `v` fulfils some of the `predicates` 
-
-## <a id="charCodeAt"></a> charCodeAt
+## <div id="charCodeAt"></div> charCodeAt
 
 
 ```ts
 charCodeAt: (index: any) => (str: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -665,17 +726,19 @@ charCodeAt: (index: any) => (str: any) => number
 ```ts
 const charCodeAt = index => str => sS(str).charCodeAt(index)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="endsWith"></a> endsWith
+## <div id="endsWith"></div> endsWith
 
 
 ```ts
 endsWith: (term: any) => (str: any) => boolean
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -684,17 +747,19 @@ endsWith: (term: any) => (str: any) => boolean
 ```ts
 const endsWith = term => str => sS(str).endsWith(term)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="fromCharCode"></a> fromCharCode
+## <div id="fromCharCode"></div> fromCharCode
 
 
 ```ts
 fromCharCode: (num: any) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -703,17 +768,19 @@ fromCharCode: (num: any) => string
 ```ts
 const fromCharCode = num => String.fromCharCode(num)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="padEnd"></a> padEnd
+## <div id="padEnd"></div> padEnd
 
 
 ```ts
 padEnd: (length: any, char: any) => (str: any) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -722,17 +789,19 @@ padEnd: (length: any, char: any) => (str: any) => string
 ```ts
 const padEnd = (length, char) => str => sS(str).padEnd(length, char)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="padStart"></a> padStart
+## <div id="padStart"></div> padStart
 
 
 ```ts
 padStart: (length: any, char: any) => (str: any) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -741,17 +810,19 @@ padStart: (length: any, char: any) => (str: any) => string
 ```ts
 const padStart = (length, char) => str => sS(str).padStart(length, char)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="repeat"></a> repeat
+## <div id="repeat"></div> repeat
 
 
 ```ts
 repeat: (length: any) => (str: any) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -760,17 +831,19 @@ repeat: (length: any) => (str: any) => string
 ```ts
 const repeat = length => str => sS(str).repeat(length)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="replace"></a> replace
+## <div id="replace"></div> replace
 
 
 ```ts
 replace: (regexp: any, newStr: any) => (str: any) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -779,17 +852,19 @@ replace: (regexp: any, newStr: any) => (str: any) => string
 ```ts
 const replace = (regexp, newStr) => str => sS(str).replace(regexp, newStr)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="split"></a> split
+## <div id="split"></div> split
 
 
 ```ts
 split: (sep: any) => (str: any) => string[]
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -798,17 +873,19 @@ split: (sep: any) => (str: any) => string[]
 ```ts
 const split = sep => str => sS(str).split(sep)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="startsWith"></a> startsWith
+## <div id="startsWith"></div> startsWith
 
 
 ```ts
 startsWith: (term: any) => (str: any) => boolean
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -817,17 +894,19 @@ startsWith: (term: any) => (str: any) => boolean
 ```ts
 const startsWith = term => str => sS(str).startsWith(term)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="substring"></a> substring
+## <div id="substring"></div> substring
 
 
 ```ts
 substring: (start: any, end: any) => (str: any) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -836,17 +915,19 @@ substring: (start: any, end: any) => (str: any) => string
 ```ts
 const substring = (start, end) => str => sS(str).substring(start, end)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="toLowerCase"></a> toLowerCase
+## <div id="toLowerCase"></div> toLowerCase
 
 
 ```ts
 toLowerCase: (str: any) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -855,17 +936,19 @@ toLowerCase: (str: any) => string
 ```ts
 const toLowerCase = str => sS(str).toLowerCase()
 ```
+
   <p>
 </details>
 
-
-
-## <a id="toUpperCase"></a> toUpperCase
+## <div id="toUpperCase"></div> toUpperCase
 
 
 ```ts
 toUpperCase: (str: any) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -874,17 +957,19 @@ toUpperCase: (str: any) => string
 ```ts
 const toUpperCase = str => sS(str).toUpperCase()
 ```
+
   <p>
 </details>
 
-
-
-## <a id="trim"></a> trim
+## <div id="trim"></div> trim
 
 
 ```ts
 trim: (str: any) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -893,28 +978,17 @@ trim: (str: any) => string
 ```ts
 const trim = str => sS(str).trim()
 ```
+
   <p>
 </details>
 
-
-
-## <a id="array"></a> array
+## <div id="array"></div> array
 
 
 ```ts
 array: (range?: number, mapper?: (x: any) => any, filter?: (v: any) => boolean) => any[]
 ```
 
-<details>
-  <summary>Implementation</summary>
-  <p>
-    
-```ts
-const array = (range = 0, mapper = id, filter = v => true): any[] =>
-  new Array(range).fill(0).reduce((a, _, i) => a.concat(filter(i) ? mapper(i) : []), [])
-```
-  <p>
-</details>
 
 Creates an array. Kind of similar to list comprehension in python
 
@@ -924,22 +998,26 @@ array(5, add(1), isEven); // [0, 3, 5]
 
 ```
 
-## <a id="concat"></a> concat
-
-
-```ts
-concat: (b: any) => (a: any) => any[]
-```
 
 <details>
   <summary>Implementation</summary>
   <p>
     
 ```ts
-const concat = b => a => ensureArray(a).concat(ensureArray(b))
+const array = (range = 0, mapper = id, filter = v => true): any[] =>
+  new Array(range).fill(0).reduce((a, _, i) => a.concat(filter(i) ? mapper(i) : []), [])
 ```
+
   <p>
 </details>
+
+## <div id="concat"></div> concat
+
+
+```ts
+concat: (b: any) => (a: any) => any[]
+```
+
 
 Concatenates `b` into `a` . Does not concat `undefined` or `null` 
 
@@ -948,22 +1026,25 @@ concat(2)([1]); // [1, 2]
 
 ```
 
-## <a id="concatRight"></a> concatRight
-
-
-```ts
-concatRight: (a: any) => (b: any) => any[]
-```
 
 <details>
   <summary>Implementation</summary>
   <p>
     
 ```ts
-const concatRight = a => b => ensureArray(a).concat(ensureArray(b))
+const concat = b => a => ensureArray(a).concat(ensureArray(b))
 ```
+
   <p>
 </details>
+
+## <div id="concatRight"></div> concatRight
+
+
+```ts
+concatRight: (a: any) => (b: any) => any[]
+```
+
 
 Concatenates `a` into `b` . Does not concat `undefined` or `null` 
 
@@ -972,12 +1053,27 @@ concat([1])(2); // [1, 2]
 
 ```
 
-## <a id="every"></a> every
+
+<details>
+  <summary>Implementation</summary>
+  <p>
+    
+```ts
+const concatRight = a => b => ensureArray(a).concat(ensureArray(b))
+```
+
+  <p>
+</details>
+
+## <div id="every"></div> every
 
 
 ```ts
 every: (func: any) => (arr: any) => boolean
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -986,17 +1082,19 @@ every: (func: any) => (arr: any) => boolean
 ```ts
 const every = func => arr => sA(arr).every(func)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="filter"></a> filter
+## <div id="filter"></div> filter
 
 
 ```ts
 filter: (func: any) => (arr: any) => {}[]
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1005,17 +1103,19 @@ filter: (func: any) => (arr: any) => {}[]
 ```ts
 const filter = func => arr => sA(arr).filter(func)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="find"></a> find
+## <div id="find"></div> find
 
 
 ```ts
 find: (func: any) => (arr: any) => {} | undefined
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1024,17 +1124,19 @@ find: (func: any) => (arr: any) => {} | undefined
 ```ts
 const find = func => arr => sA(arr).find(func)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="findIndex"></a> findIndex
+## <div id="findIndex"></div> findIndex
 
 
 ```ts
 findIndex: (func: any) => (arr: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1043,17 +1145,19 @@ findIndex: (func: any) => (arr: any) => number
 ```ts
 const findIndex = func => arr => sA(arr).findIndex(func)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="forEach"></a> forEach
+## <div id="forEach"></div> forEach
 
 
 ```ts
 forEach: (...funcs: any[]) => (arr: any) => void
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1062,17 +1166,19 @@ forEach: (...funcs: any[]) => (arr: any) => void
 ```ts
 const forEach = (...funcs) => arr => sA(arr).forEach(Pipe(...funcs))
 ```
+
   <p>
 </details>
 
-
-
-## <a id="includes"></a> includes
+## <div id="includes"></div> includes
 
 
 ```ts
 includes: (thing: any) => (arr: any) => boolean
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1081,17 +1187,19 @@ includes: (thing: any) => (arr: any) => boolean
 ```ts
 const includes = thing => arr => sA(arr).includes(thing)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="indexOf"></a> indexOf
+## <div id="indexOf"></div> indexOf
 
 
 ```ts
 indexOf: (term: any) => (arr: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1100,17 +1208,19 @@ indexOf: (term: any) => (arr: any) => number
 ```ts
 const indexOf = term => arr => sA(arr).indexOf(term)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="join"></a> join
+## <div id="join"></div> join
 
 
 ```ts
 join: (sep: string) => (arr: any) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1119,17 +1229,19 @@ join: (sep: string) => (arr: any) => string
 ```ts
 const join = (sep: string) => arr => sA(arr).join(sep)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="length"></a> length
+## <div id="length"></div> length
 
 
 ```ts
 length: (arr: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1138,17 +1250,19 @@ length: (arr: any) => number
 ```ts
 const length = arr => sA(arr).length
 ```
+
   <p>
 </details>
 
-
-
-## <a id="map"></a> map
+## <div id="map"></div> map
 
 
 ```ts
 map: (...funcs: any[]) => (arr: any) => any[]
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1157,17 +1271,19 @@ map: (...funcs: any[]) => (arr: any) => any[]
 ```ts
 const map = (...funcs) => arr => sA(arr).map(Pipe(...funcs))
 ```
+
   <p>
 </details>
 
-
-
-## <a id="reverse"></a> reverse
+## <div id="reverse"></div> reverse
 
 
 ```ts
 reverse: (arr: any) => any[]
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1176,17 +1292,19 @@ reverse: (arr: any) => any[]
 ```ts
 const reverse = arr => sA(arr).reverse()
 ```
+
   <p>
 </details>
 
-
-
-## <a id="slice"></a> slice
+## <div id="slice"></div> slice
 
 
 ```ts
 slice: (begin: any, end: any) => (arr: any) => any[]
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1195,17 +1313,19 @@ slice: (begin: any, end: any) => (arr: any) => any[]
 ```ts
 const slice = (begin, end) => arr => sA(arr).slice(begin, end)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="some"></a> some
+## <div id="some"></div> some
 
 
 ```ts
 some: (func: any) => (arr: any) => boolean
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1214,17 +1334,19 @@ some: (func: any) => (arr: any) => boolean
 ```ts
 const some = func => arr => sA(arr).some(func)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="sort"></a> sort
+## <div id="sort"></div> sort
 
 
 ```ts
 sort: (func: any) => (arr: any) => any[]
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1233,17 +1355,26 @@ sort: (func: any) => (arr: any) => any[]
 ```ts
 const sort = func => arr => sA(arr).sort(func)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="sortBy"></a> sortBy
+## <div id="sortBy"></div> sortBy
 
 
 ```ts
 sortBy: (path?: string) => (arr: any) => any[]
 ```
+
+
+Sort objects or arrays by key or index (or both)
+
+```js
+sortBy("a[0]")([{ a: [3] }, { a: [2] }, { a: [1] }]);
+// [{ a: [1] }, { a: [2] }, { a: [3] }]
+
+```
+
 
 <details>
   <summary>Implementation</summary>
@@ -1257,23 +1388,19 @@ const sortBy = (path = "") =>
     return lt(B)(A) ? -1 : gt(B)(A) ? 1 : 0;
   })
 ```
+
   <p>
 </details>
 
-Sort objects or arrays by key or index (or both)
-
-```js
-sortBy("a[0]")([{ a: [3] }, { a: [2] }, { a: [1] }]);
-// [{ a: [1] }, { a: [2] }, { a: [3] }]
-
-```
-
-## <a id="plainReduce"></a> plainReduce
+## <div id="plainReduce"></div> plainReduce
 
 
 ```ts
 plainReduce: (func: any, initial: any) => (arr: any) => any
 ```
+
+
+See `reduce` for documentation
 
 <details>
   <summary>Implementation</summary>
@@ -1283,17 +1410,19 @@ plainReduce: (func: any, initial: any) => (arr: any) => any
 const plainReduce = (func, initial) => arr =>
   sA(arr).reduce((a, c) => func(c)(a), initial)
 ```
+
   <p>
 </details>
 
-See `reduce` for documentation
-
-## <a id="mapFilterReduce"></a> mapFilterReduce
+## <div id="mapFilterReduce"></div> mapFilterReduce
 
 
 ```ts
 mapFilterReduce: (reducer: any, initial: any, map: any, filter?: (v: any) => boolean) => (arr: any) => any
 ```
+
+
+See `reduce` for documentation
 
 <details>
   <summary>Implementation</summary>
@@ -1303,28 +1432,17 @@ mapFilterReduce: (reducer: any, initial: any, map: any, filter?: (v: any) => boo
 const mapFilterReduce = (reducer, initial, map, filter = v => true) => arr =>
   sA(arr).reduce((a, c) => (filter(c) ? reducer(map(c))(a) : a), initial)
 ```
+
   <p>
 </details>
 
-See `reduce` for documentation
-
-## <a id="reduce"></a> reduce
+## <div id="reduce"></div> reduce
 
 
 ```ts
 reduce: (reducer: any, initial: any, map: any, filter: any) => (arr: any) => any
 ```
 
-<details>
-  <summary>Implementation</summary>
-  <p>
-    
-```ts
-const reduce = (reducer, initial, map, filter) =>
-  map ? mapFilterReduce(reducer, initial, map, filter) : plainReduce(reducer, initial)
-```
-  <p>
-</details>
 
 Note that `reducer` needs to be a higher order unary function (returning another unary function) and that the order of the current and accumulator are reversed. This makes it possible to use other functions from this package as the `reducer` .
 
@@ -1335,6 +1453,7 @@ reduce(add, 0)([1, 2, 3]); // 6
 reduce(concat, [])([[1, 2], [3, 4]]); // [1, 2, 3, 4]
 
 ```
+
  `map` and `filter` can be used to do many operations that otherwise would require iterating over a list many times, like `[].filter(fn).map(fn).reduce(fn)` which can be orders of magnitude slower. Filtering happens before mapping.
 
 
@@ -1349,12 +1468,28 @@ Pipe(filter(isEven), map(pow(2)), reduce(add))(numbers); // 20
 
 ```
 
-## <a id="int"></a> int
+
+<details>
+  <summary>Implementation</summary>
+  <p>
+    
+```ts
+const reduce = (reducer, initial, map, filter) =>
+  map ? mapFilterReduce(reducer, initial, map, filter) : plainReduce(reducer, initial)
+```
+
+  <p>
+</details>
+
+## <div id="int"></div> int
 
 
 ```ts
 int: (n: any) => number
 ```
+
+
+Unary version of parseInt (can safely be used in `map` etc)
 
 <details>
   <summary>Implementation</summary>
@@ -1363,17 +1498,19 @@ int: (n: any) => number
 ```ts
 const int = n => parseInt(n)
 ```
+
   <p>
 </details>
 
-Unary version of parseInt (can safely be used in `map` etc)
-
-## <a id="float"></a> float
+## <div id="float"></div> float
 
 
 ```ts
 float: (n: any) => number
 ```
+
+
+Unary version of parseFloat (can safely be used in `map` etc)
 
 <details>
   <summary>Implementation</summary>
@@ -1382,17 +1519,19 @@ float: (n: any) => number
 ```ts
 const float = n => parseFloat(n)
 ```
+
   <p>
 </details>
 
-Unary version of parseFloat (can safely be used in `map` etc)
-
-## <a id="toFixed"></a> toFixed
+## <div id="toFixed"></div> toFixed
 
 
 ```ts
 toFixed: (digits: number) => (num: number) => string
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1402,17 +1541,19 @@ toFixed: (digits: number) => (num: number) => string
 const toFixed = (digits: number) => (num: number) =>
   isNumber(num) ? num.toFixed(digits) : ""
 ```
+
   <p>
 </details>
 
-
-
-## <a id="add"></a> add
+## <div id="add"></div> add
 
 
 ```ts
 add: (b: any) => (a: any) => any
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1421,17 +1562,19 @@ add: (b: any) => (a: any) => any
 ```ts
 const add = b => a => a + b
 ```
+
   <p>
 </details>
 
-
-
-## <a id="divide"></a> divide
+## <div id="divide"></div> divide
 
 
 ```ts
 divide: (b: any) => (a: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1440,17 +1583,19 @@ divide: (b: any) => (a: any) => number
 ```ts
 const divide = b => a => a / b
 ```
+
   <p>
 </details>
 
-
-
-## <a id="multiply"></a> multiply
+## <div id="multiply"></div> multiply
 
 
 ```ts
 multiply: (b: any) => (a: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1459,17 +1604,19 @@ multiply: (b: any) => (a: any) => number
 ```ts
 const multiply = b => a => a * b
 ```
+
   <p>
 </details>
 
-
-
-## <a id="subtract"></a> subtract
+## <div id="subtract"></div> subtract
 
 
 ```ts
 subtract: (b: any) => (a: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1478,17 +1625,19 @@ subtract: (b: any) => (a: any) => number
 ```ts
 const subtract = b => a => a - b
 ```
+
   <p>
 </details>
 
-
-
-## <a id="max"></a> max
+## <div id="max"></div> max
 
 
 ```ts
 max: (arr: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1497,17 +1646,19 @@ max: (arr: any) => number
 ```ts
 const max = arr => Math.max(...arr)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="min"></a> min
+## <div id="min"></div> min
 
 
 ```ts
 min: (arr: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1516,17 +1667,19 @@ min: (arr: any) => number
 ```ts
 const min = arr => Math.min(...arr)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="clamp"></a> clamp
+## <div id="clamp"></div> clamp
 
 
 ```ts
 clamp: (min: any, max: any) => (n: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1535,17 +1688,19 @@ clamp: (min: any, max: any) => (n: any) => number
 ```ts
 const clamp = (min, max) => n => Math.min(max, Math.max(min, n))
 ```
+
   <p>
 </details>
 
-
-
-## <a id="pow"></a> pow
+## <div id="pow"></div> pow
 
 
 ```ts
 pow: (exp: any) => (base: any) => number
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1554,17 +1709,19 @@ pow: (exp: any) => (base: any) => number
 ```ts
 const pow = exp => base => Math.pow(base, exp)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="rangeMap"></a> rangeMap
+## <div id="rangeMap"></div> rangeMap
 
 
 ```ts
 rangeMap: (inMin: any, inMax: any, outMin: any, outMax: any) => (n: any) => any
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1574,17 +1731,19 @@ rangeMap: (inMin: any, inMax: any, outMin: any, outMax: any) => (n: any) => any
 const rangeMap = (inMin, inMax, outMin, outMax) => n =>
   ((n - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin
 ```
+
   <p>
 </details>
 
-
-
-## <a id="assign"></a> assign
+## <div id="assign"></div> assign
 
 
 ```ts
 assign: (b: any) => (a: any) => any
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1593,17 +1752,19 @@ assign: (b: any) => (a: any) => any
 ```ts
 const assign = b => a => Object.assign({}, a, b)
 ```
+
   <p>
 </details>
 
-
-
-## <a id="has"></a> has
+## <div id="has"></div> has
 
 
 ```ts
 has: (path?: string) => (obj: any) => boolean
 ```
+
+
+Checks whether `obj` has a value at the given `path` . Not to be confused with `object.hasOwnProperty` 
 
 <details>
   <summary>Implementation</summary>
@@ -1612,17 +1773,19 @@ has: (path?: string) => (obj: any) => boolean
 ```ts
 const has = (path = "") => obj => exists(get(path)(obj))
 ```
+
   <p>
 </details>
 
-Checks whether `obj` has a value at the given `path` . Not to be confused with `object.hasOwnProperty` 
-
-## <a id="objectFromEntry"></a> objectFromEntry
+## <div id="objectFromEntry"></div> objectFromEntry
 
 
 ```ts
 objectFromEntry: ([k, v]?: [(string | undefined)?, any?]) => { [x: string]: any; }
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1631,17 +1794,19 @@ objectFromEntry: ([k, v]?: [(string | undefined)?, any?]) => { [x: string]: any;
 ```ts
 const objectFromEntry = ([k, v]: Entry = []) => (k ? { [k]: v } : {})
 ```
+
   <p>
 </details>
 
-
-
-## <a id="mapEntry"></a> mapEntry
+## <div id="mapEntry"></div> mapEntry
 
 
 ```ts
 mapEntry: (mapKey: any, mapValue: any) => ([k, v]?: [(string | undefined)?, any?]) => any[]
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1653,17 +1818,19 @@ const mapEntry = (mapKey, mapValue) => ([k, v]: Entry = []) => [
   mapValue(v)
 ]
 ```
+
   <p>
 </details>
 
-
-
-## <a id="mapObject"></a> mapObject
+## <div id="mapObject"></div> mapObject
 
 
 ```ts
 mapObject: (map: any, filter: any) => (obj?: {}) => any
 ```
+
+
+
 
 <details>
   <summary>Implementation</summary>
@@ -1673,7 +1840,6 @@ mapObject: (map: any, filter: any) => (obj?: {}) => any
 const mapObject = (map, filter) => (obj = {}) =>
   reduce(assign, {}, Pipe(map, objectFromEntry), filter)(Object.entries(obj))
 ```
+
   <p>
 </details>
-
-

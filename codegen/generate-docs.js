@@ -22,8 +22,8 @@ codeToJson(path.resolve(__dirname, "../")).then(({ declarations, symbols, types 
       [
         stringifyName(name),
         stringifyType(types[typeId].text, name),
-        stringifySource(declarations[sourceId].text),
-        stringifyDoc(doc)
+        stringifyDoc(doc),
+        stringifySource(declarations[sourceId].text)
       ].join("\n\n")
     )
     .join("\n\n");
@@ -44,7 +44,7 @@ function filterSymbol(symbol) {
 }
 
 function stringifyName(name) {
-  return `## <a id="${name}"></a> ${name}`;
+  return `## <div id="${name}"></div> ${name}`;
 }
 
 function stringifyType(type, name) {
@@ -61,7 +61,7 @@ function stringifySource(code) {
 }
 
 function codeBlock(language, code) {
-  return "\n```" + `${language}\n${code}\n` + "```";
+  return "\n```" + `${language}\n${code}\n` + "```\n";
 }
 
 function stringifyDoc(fragments = []) {
