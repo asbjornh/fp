@@ -15,7 +15,9 @@ codeToJson(path.resolve(__dirname, "../")).then(({ declarations, symbols, types 
       (symbol.documentation || {}).summary
     ]);
 
-  const toc = functions.map(([name]) => `- <a href="#${name}">${name}</a>`).join("\n");
+  const toc = functions
+    .map(([name]) => `<li><a href="#${name}">${name}</a></li>`)
+    .join("\n");
 
   const docs = functions
     .map(([name, typeId, sourceId, doc]) =>
@@ -31,9 +33,9 @@ codeToJson(path.resolve(__dirname, "../")).then(({ declarations, symbols, types 
   const fileContent = `# Kompis API
 <details>
   <summary>Table of contents</summary>
-  <p>
+  <ul>
     ${toc}
-  </p>
+  </ul>
 </details>
 
 ${docs}
