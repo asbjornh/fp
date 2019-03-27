@@ -31,7 +31,9 @@ codeToJson(path.resolve(__dirname, "../")).then(({ declarations, symbols, types 
   const fileContent = `# Kompis API
 <details>
   <summary>Table of contents</summary>
-  ${toc}
+  <p>
+    ${toc}
+  </p>
 </details>
 
 ${docs}

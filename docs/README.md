@@ -1,7 +1,8 @@
 # Kompis API
 <details>
   <summary>Table of contents</summary>
-  - <a href="#Pipe">Pipe</a>
+  <p>
+    - <a href="#Pipe">Pipe</a>
 - <a href="#not">not</a>
 - <a href="#get">get</a>
 - <a href="#trace">trace</a>
@@ -78,6 +79,7 @@
 - <a href="#objectFromEntry">objectFromEntry</a>
 - <a href="#mapEntry">mapEntry</a>
 - <a href="#mapObject">mapObject</a>
+  </p>
 </details>
 
 ## <div id="Pipe"></div> Pipe
