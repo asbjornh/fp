@@ -2,11 +2,18 @@ import test from "ava";
 
 import { isEven, isOdd } from "../source/index";
 
-import { exists, id, mapIf, no, noop, or, yes } from "../source/index";
+import { always, exists, id, mapIf, no, noop, or, yes } from "../source/index";
 
 const macro = (t, expected, input) => {
   t.deepEqual(expected, input);
 };
+
+test("always", t => {
+  t.is(1, always(1)());
+  t.is(1, always(1)(2));
+  t.is(undefined, always()());
+  t.is(undefined, always()(1));
+});
 
 test("exists", t => {
   t.is(true, exists(0));

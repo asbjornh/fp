@@ -2,6 +2,8 @@ import { get, match, not, otherwise, Pipe, trace } from "./utils";
 export { get, match, not, otherwise, Pipe, trace };
 
 // Misc
+/** Returns a [constant function](https://en.wikipedia.org/wiki/Constant_function) of `x` */
+export const always = x => () => x;
 /** Compares to `null` and `undefined` */
 export const exists = x => x !== undefined && x !== null;
 /** Identity function */
