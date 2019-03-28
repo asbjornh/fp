@@ -8,6 +8,7 @@
 <li><a href="#trace">trace</a></li>
 <li><a href="#match">match</a></li>
 <li><a href="#otherwise">otherwise</a></li>
+<li><a href="#always">always</a></li>
 <li><a href="#exists">exists</a></li>
 <li><a href="#id">id</a></li>
 <li><a href="#or">or</a></li>
@@ -24,6 +25,7 @@
 <li><a href="#isString">isString</a></li>
 <li><a href="#isEven">isEven</a></li>
 <li><a href="#isOdd">isOdd</a></li>
+<li><a href="#isOneOf">isOneOf</a></li>
 <li><a href="#isAtPath">isAtPath</a></li>
 <li><a href="#isAtIndex">isAtIndex</a></li>
 <li><a href="#isAll">isAll</a></li>
@@ -221,7 +223,7 @@ match: (...patterns: [(v: any) => boolean, (v: any) => any][]) => (x: any) => an
 ```
 
 
-Takes any number of pairs of [predicate, mapper]. When a match is found for `x` , returns the result of the associated mapper applied to `x` . `otherwise` can be used as a fallback pattern (must be the last pattern).
+Takes any number of pairs of `[predicate, mapper]` . When a match is found for `x` , returns the result of the associated mapper applied to `x` . `otherwise` can be used as a fallback pattern (must be the last pattern).
 
 
 ```js
@@ -233,7 +235,7 @@ const matcher = match(
 
 matcher(1); // "1 is odd!"
 matcher(2); // "2 is even!"
-matcher("a"); // a is not a number :/
+matcher("a"); // "a is not a number :/"
 
 ```
 If you use `match` recursively you'll get a maximum call stack exceeded error. To avoid this, execute `match` with a value explicitly if you need recursion:
@@ -286,6 +288,27 @@ otherwise: () => boolean
     
 ```ts
 const otherwise = () => true
+```
+
+  <p>
+</details>
+
+## <div id="always"></div> always
+
+
+```ts
+always: (x: any) => () => any
+```
+
+
+Returns a [constant function](https://en.wikipedia.org/wiki/Constant_function) of `x` 
+
+<details>
+  <summary>Implementation</summary>
+  <p>
+    
+```ts
+const always = x => () => x
 ```
 
   <p>
@@ -623,6 +646,27 @@ isOdd: (n: any) => boolean
     
 ```ts
 const isOdd = n => isNumber(n) && n % 2 !== 0
+```
+
+  <p>
+</details>
+
+## <div id="isOneOf"></div> isOneOf
+
+
+```ts
+isOneOf: (...values: any[]) => (v: any) => boolean
+```
+
+
+
+
+<details>
+  <summary>Implementation</summary>
+  <p>
+    
+```ts
+const isOneOf = (...values) => v => values.includes(v)
 ```
 
   <p>

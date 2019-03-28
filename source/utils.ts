@@ -60,7 +60,7 @@ export const trace = (label = "") => v => {
 
 const matchError = index => `Non-function passed to 'match[${index}]'`;
 
-/** Takes any number of pairs of [predicate, mapper]. When a match is found for `x`, returns the result of the associated mapper applied to `x`. `otherwise` can be used as a fallback pattern (must be the last pattern).
+/** Takes any number of pairs of `[predicate, mapper]`. When a match is found for `x`, returns the result of the associated mapper applied to `x`. `otherwise` can be used as a fallback pattern (must be the last pattern).
 
 ```js
 const matcher = match(
@@ -71,7 +71,7 @@ const matcher = match(
 
 matcher(1); // "1 is odd!"
 matcher(2); // "2 is even!"
-matcher("a"); // a is not a number :/
+matcher("a"); // "a is not a number :/"
 ```
 If you use `match` recursively you'll get a maximum call stack exceeded error. To avoid this, execute `match` with a value explicitly if you need recursion:
 
