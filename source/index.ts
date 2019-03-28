@@ -37,6 +37,7 @@ export const isNumber = n => typeof n === "number";
 export const isString = n => typeof n === "string";
 export const isEven = n => isNumber(n) && n % 2 === 0;
 export const isOdd = n => isNumber(n) && n % 2 !== 0;
+export const isOneOf = (...values) => v => values.includes(v);
 export const isAtPath = (path, predicate) => v => predicate(get(path)(v));
 export const isAtIndex = (index, predicate) => isAtPath(`[${index}]`, predicate);
 /** Checks whether the `v` fulfils all the `predicates` */

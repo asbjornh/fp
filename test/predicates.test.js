@@ -10,6 +10,7 @@ import {
   isEven,
   isNumber,
   isOdd,
+  isOneOf,
   isSome,
   isString,
   lt,
@@ -49,6 +50,14 @@ test("isOdd", t => {
   t.is(true, isOdd(3));
   t.is(false, isOdd(2));
   t.is(false, isOdd("3"));
+});
+
+test("isOneOf", t => {
+  t.is(true, isOneOf("a", 1, true)("a"));
+  t.is(true, isOneOf("a", 1, true)(1));
+  t.is(true, isOneOf("a", 1, true)(true));
+  t.is(false, isOneOf("a", 1, true)("c"));
+  t.is(false, isOneOf("a", 1, true)());
 });
 
 test("lt", t => {
