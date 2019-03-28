@@ -343,7 +343,7 @@ id: (x: any) => any
 ```
 
 
-Identity function
+[Identity function](https://en.wikipedia.org/wiki/Identity_function)
 
 <details>
   <summary>Implementation</summary>
@@ -406,7 +406,7 @@ noop: () => void
 ```
 
 
-Always returns `undefined` 
+[No operation](https://en.wikipedia.org/wiki/NOP_(code)). Always returns `undefined` 
 
 <details>
   <summary>Implementation</summary>

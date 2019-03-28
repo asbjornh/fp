@@ -6,13 +6,13 @@ export { get, match, not, otherwise, Pipe, trace };
 export const always = x => () => x;
 /** Compares to `null` and `undefined` */
 export const exists = x => x !== undefined && x !== null;
-/** Identity function */
+/** [Identity function](https://en.wikipedia.org/wiki/Identity_function) */
 export const id = x => x;
 /** Returns `x` if it exists. Otherwise returns `fallback` */
 export const or = fallback => x => (exists(x) ? x : fallback);
 /** Always returns `false` */
 export const no = () => false;
-/** Always returns `undefined` */
+/** [No operation](https://en.wikipedia.org/wiki/NOP_(code)). Always returns `undefined` */
 export const noop = () => {};
 /** Always returns `true` */
 export const yes = () => true;
