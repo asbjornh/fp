@@ -1,3 +1,10 @@
+# 0.5.0
+
+- Adds `always`
+- Adds `isOneOf`
+- Adds docs
+- Fixes `toFixed` returning `0` for `0`. `toFixed` now always returns a string
+
 # 0.4.0
 
 - Reimplements in typescript (non-breaking) to enhance developer experience in typescript capable editors.
