@@ -1139,7 +1139,7 @@ const every = func => arr => sA(arr).every(func)
 
 
 ```ts
-filter: (func: any) => (arr: any) => {}[]
+filter: (func: any) => (arr: any) => any[]
 ```
 
 
@@ -1160,7 +1160,7 @@ const filter = func => arr => sA(arr).filter(func)
 
 
 ```ts
-find: (func: any) => (arr: any) => {} | undefined
+find: (func: any) => (arr: any) => any
 ```
 
 
